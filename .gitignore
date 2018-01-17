@@ -1,0 +1,5 @@
+# COMPILED CODE
+*.class
+
+# LAB/HOMEWORK/PROJECT TEMPLATE FILES
+*.template
