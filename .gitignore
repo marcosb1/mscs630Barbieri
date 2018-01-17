@@ -1,5 +1,8 @@
 # COMPILED CODE
 *.class
 
-# LAB/HOMEWORK/PROJECT TEMPLATE FILES
-*.template
+# AUTO-GENERATED FILES
+*.swp
+*.iml
+.idea/
+.DS_Store
