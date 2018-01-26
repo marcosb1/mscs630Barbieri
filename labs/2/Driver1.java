@@ -14,7 +14,7 @@ import java.util.Scanner;
 
 /**
  */
-class Driver {
+class Driver1 {
 
   /**
    * euclidAlg
@@ -38,15 +38,16 @@ class Driver {
    *  long which is the greatest common denominator
    */
   public static long euclidAlg(long a, long b) {
-    // we want to make sure that a >= b, if not swap them
+    // check if a >= b
     if (a < b) {
       long tempA = a;
       a = b;
       b = tempA;
-    }    
+    }
 
     // this is how we check if we are done with the recursion
-    long r = a % b;
+    long q = Math.floorDiv(a, b);
+    long r = a - q * b;
 
     // when the remainder is 0 simply return b, according to Euclidean GCD
     if (r == 0) {
@@ -74,6 +75,13 @@ class Driver {
     while (input.hasNext()) {
       String plainText = input.nextLine();
       String[] splitted = plainText.split("\\s+");
+
+      if ((Long.parseLong(splitted[0]) == 0) && 
+            (Long.parseLong(splitted[1]) == 0)) {
+        System.out.println("`0,0` is not a valid input");
+        break;
+      }      
+
       long gcd = euclidAlg(Long.parseLong(splitted[0]), Long.parseLong(splitted[1]));
       System.out.println(gcd); 
     }
