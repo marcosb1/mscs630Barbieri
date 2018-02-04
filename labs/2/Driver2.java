@@ -14,21 +14,40 @@ import java.util.Scanner;
 
 /**
  */
-class Driver {
+class Driver2 {
 
   /**
    */
-  public static long[] euclidAlgExt(long a, long b) {
-    long q = Math.floorDive(a, b);
-    long r = a - q * b;
-    long x = 1;
-    long y = -1;
+  public static String euclidAlgExt(long a, long b) {
+    long a_1 = 1;
+    long a_2 = 0;
+    long b_1 = 0;
+    long b_2 = 1;
 
-    long d = (a * x) + (b * y);
-    while (d != r) {
-            
-    } 
-    return null;
+    String out = "";
+    while (b > 0) {
+      System.out.println(a + " | " + a_1 + " | " + a_2);
+      System.out.println(b + " | " + b_1 + " | " + b_2);
+
+      long q = a / b;
+      long r = a - q * b; 
+
+      a = b;
+      b = r;
+      
+      long temp_a_1 = a_1;
+      long temp_a_2 = a_2;
+      a_1 = b_1;
+      a_2 = b_2;
+      b_1 = temp_a_1 - q * b_1;
+      b_2 = temp_a_2 - q * b_2;
+      
+      out = a + " " + a_1 + " " + a_2;
+      System.out.println(out);
+      System.out.println("----------------------------");
+    }   
+
+    return out;
   }
 
   /**
@@ -49,7 +68,7 @@ class Driver {
     while (input.hasNext()) {
       String plainText = input.nextLine();
       String[] splitted = plainText.split("\\s+");
-      long gcd = euclidAlgExt(Long.parseLong(splitted[0]), Long.parseLong(splitted[1]));
+      String gcd = euclidAlgExt(Long.parseLong(splitted[0]), Long.parseLong(splitted[1]));
       System.out.println(gcd); 
     }
   }
