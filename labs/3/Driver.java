@@ -37,7 +37,7 @@ class Driver {
     return cofactorMat;
   }
 
-  public static int det(int[][] A) {
+  public static int cofModDet(int m, int[][] A) {
     int det = 0;
 
     if (A.length == 1) {
@@ -47,13 +47,14 @@ class Driver {
     } else {
       boolean isPositive = true;
       for (int a = 0; a < A[0].length; a++) {
-        int newDet = A[0][a] * det(getCofactorMatrix(A, a));
+        int newDet = A[0][a] * cofModDet(m, getCofactorMatrix(A, a));
         det += isPositive ? newDet : -1 * newDet;
         isPositive = !isPositive;
       }
     }
 
-    return det;
+    det = det % m;
+    return det < 0 ? det + m : det;
   } 
  
   public static void main(String[] args) {
@@ -83,10 +84,11 @@ class Driver {
         }        
       }
       
-      int det = det(inputMatrix);
+      int det = cofModDet(mod, inputMatrix);
       int r = det % mod;
       r = r < 0 ? r + mod : r;
-      System.out.println(r);
+      //System.out.println(r);
+      System.out.println(det);
     }    
   }
 }
