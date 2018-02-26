@@ -38,7 +38,6 @@ class Driver {
   }
 
   public static int det(int[][] A) {
-    Driver.print2dArray(A);
     int det = 0;
 
     if (A.length == 1) {
@@ -85,9 +84,9 @@ class Driver {
       }
       
       int det = det(inputMatrix);
-      System.out.println(det);
-      System.out.println(mod);
-      System.out.println((det) % (mod));
+      int r = det % mod;
+      r = r < 0 ? r + mod : r;
+      System.out.println(r);
     }    
   }
 }
