@@ -1,5 +1,5 @@
 /**
- * file: Driver
+ * file: Driver1
  * author: Marcos Barbieri
  * course: MSCS 630L
  * assignment: lab 3 
@@ -11,14 +11,32 @@
 import java.util.Scanner;
 import java.util.Arrays;
 
-class Driver {
+class Driver1 {
   
+  /** print2dArray
+   * Helper function for debugging, will print 2D matrix
+   *
+   * parameter:
+   *  A: Integer matrix we want to print
+   */  
   public static void print2dArray(int[][] A) {
     for (int i = 0; i < A.length; i++) {
       System.out.println(Arrays.toString(A[i]));
     }
   }
 
+  /** getCofactorMatrix
+   * This helper function will return a matrix which will correspond to the
+   * correspond to the submatrix that must be used to find the determinant
+   * in cofMatDet
+   *
+   * parameters:
+   *  A: integer matrix for which we must find the submatrix of
+   *  cofactor: essentially the column index that we are using for a cofactor
+   *
+   * return:
+   *  cofactorMat: integer matrix containing the submatrix
+   */
   public static int[][] getCofactorMatrix(int[][] A, int cofactor) {
     int[][] cofactorMat = new int[A.length - 1][A.length-1];
 
@@ -37,6 +55,19 @@ class Driver {
     return cofactorMat;
   }
 
+  /** cofMatDet
+   * Will take in a matrix of integers, the first line denoting two numbers
+   * m, and n respectively; m being the modulo we want to use and n being
+   * the shape of the matrix; We then find the determinant of the matrix 
+   * that is given
+   *
+   * parameters:
+   *  m: integer modulo number required for operation
+   *  A: integer matrix that we want to get the determinant of
+   * 
+   * return:
+   *  det: integer denoting the determinant of A 
+   */
   public static int cofModDet(int m, int[][] A) {
     int det = 0;
 
@@ -57,6 +88,9 @@ class Driver {
     return det < 0 ? det + m : det;
   } 
  
+  /**
+   * main method where we will ingest input
+   */
   public static void main(String[] args) {
     Scanner input = new Scanner(System.in);
     // get measurement of matrix as well as modulo value
@@ -67,14 +101,12 @@ class Driver {
       int mod = Integer.parseInt(meta[0]);
       int dim = Integer.parseInt(meta[1]);
        
-      // TODO: Calculate determinant
       int[][] inputMatrix = new int[dim][dim];
       for (int i = 0; i < dim; i++) { 
         String line = input.nextLine();
         String[] lineParts = line.split("\\s+");
         // populate input matrix with values
         if (lineParts.length != dim) {
-          // TODO: valid error output
           System.err.println("Please provide a square matrix");
           break;
         }
@@ -85,9 +117,6 @@ class Driver {
       }
       
       int det = cofModDet(mod, inputMatrix);
-      int r = det % mod;
-      r = r < 0 ? r + mod : r;
-      //System.out.println(r);
       System.out.println(det);
     }    
   }
