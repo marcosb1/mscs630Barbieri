@@ -27,12 +27,11 @@ class Driver2 {
   }
 
   /** getHexMatP
-   * We take in a string and fill in a matrix one by one, column-wise; 
-   * However, instead of filling in the matrix completely column-wise, 
-   * we first fill in up to 16 characters, which makes up the first matrix,
-   * then we leave a space, and we fill in the next matrix consisting of 
-   * 16 characters (4x4 shape)
-   * 
+   * We use this function to take in a string and a character for which 
+   * we will encode using the ASCII code converted to hex, when there is 
+   * no string we simply fill in 16 elements of the character provided encoded
+   * in the same way as the string
+   *
    * parameters:
    *  s: character that will fill empty spaces
    *  p: String containing the plaintext message
@@ -41,35 +40,23 @@ class Driver2 {
    *  String matrix with encoded message
    */
   public static String[][] getHexMatP(char s, String p) {
-    int numMatrices = p.length() % 16 == 0 ? (p.length() / 16) : (p.length() / 16) + 1;    
-    int maxSlots = ((numMatrices - 1) * 4) + (numMatrices * 16);
-    
-    String[][] hexMatrix = new String[maxSlots / 4][4];
-    int rowIndex = 0;
-    int rowChangedCount = 0;
-    while (rowIndex < hexMatrix.length) {
-      rowChangedCount = rowChangedCount + 1;
-      if ((rowIndex < (hexMatrix.length - 4)) && 
-            (rowChangedCount > 4)) {
-        rowChangedCount = 0;
-        String[] empty = {" ", " ", " ", " "}; 
-        hexMatrix[rowIndex] = empty; 
-      } else {
-      
-        for (int col = 0; col < 4; col++) {
-          if (p.length() > 0) {
-            int charCode = Character.codePointAt(p.substring(0,1), 0);
-            hexMatrix[rowIndex][col] = Integer.toHexString(charCode).toUpperCase();
-            p = p.substring(1);
-          } else {
-            int charCode = Character.codePointAt("" + s, 0);
-            hexMatrix[rowIndex][col] = Integer.toHexString(charCode).toUpperCase();
-          }      
+    // string should not exceed 16 characters
+    if (p.length() > 16)
+      return null;
+
+    String[][] hexMatrix = new String[4][4];
+    for (int col = 0; col < 4; col++) {
+      for (int row = 0; row < 4; row++) {
+        if (p.length() > 0) {
+          int charCode = Character.codePointAt(p.substring(0,1), 0);
+          hexMatrix[row][col] = Integer.toHexString(charCode).toUpperCase();
+          p = p.substring(1);
+        } else {
+          int charCode = Character.codePointAt("" + s, 0);
+          hexMatrix[row][col] = Integer.toHexString(charCode).toUpperCase(); 
         }
       }
-      rowIndex = rowIndex + 1;
     }
- 
     return hexMatrix;
   }
  
@@ -83,8 +70,37 @@ class Driver2 {
       String subChar = input.nextLine();
       String plainText = input.nextLine();
       
-      String[][] hexMat = getHexMatP(subChar.charAt(0), plainText); 
-      print2dArray(hexMat);
+      if ((plainText.length() % 16) != 0) {
+        int offset = (plainText.length() / 16) + 1;
+        for (int i = 0; i < offset; i++) {
+          plainText = plainText + " ";
+        }
+      }
+  
+      String copyText = plainText;
+      // we want to encode in 16 character matrices
+      for (int c = 0; c < ((plainText.length() / 16) + 1); c++) {
+        // thus we create a lower bound and an upperbound and 
+        // increase them by our matrix shape (4x4 = 16)
+        int lowerBound = c * 16;
+        int upperBound = (c * 16) + 16;
+        copyText = plainText.length() < upperBound ? plainText.substring(lowerBound) :
+                      plainText.substring(lowerBound, upperBound);
+        if (copyText.length() > 0) {
+          String[][] hexMat = getHexMatP(subChar.charAt(0), copyText); 
+          print2dArray(hexMat);
+        } else {
+          String[][] hexMat = getHexMatP(subChar.charAt(0), ""); 
+          print2dArray(hexMat); 
+        }
+        
+        // lets make sure to print out an empty space in between
+        // each matrix, but only in between the matrices, so on 
+        // the last iteration don't print an empty space out
+        if (c < ((plainText.length() / 16))) {
+          System.out.println();
+        }
+      }
     }    
   }
 }
