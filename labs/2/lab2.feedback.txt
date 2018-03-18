@@ -1,0 +1,19 @@
+19 pts
+
+Marcos,
+
+About your programs...
+
+Functionality
+
+- All programs function correctly as required.
+
+
+Style Check
+
+- There is a missing part that was not completed, it says 'TO DO:', but was not
+  done.
+
+Peace,
+
+- Dr. Rivas
