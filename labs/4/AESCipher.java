@@ -57,52 +57,38 @@ class AESCipher {
     // Step 1a. convert our string into a 4x4 matrix
     String[][] keyMatrix = matricize(KeyHex);
    
-    // DEBUGGING 
-    for (int n=0; n<keyMatrix.length; n++) {
-      System.out.println(Arrays.toString(keyMatrix[n]));
-    } 
     // Step 1b. form a 4x44 matrix where every entry contains hex pairs 
     // Step 2. Take AES key and make it be the first four columns of w
     String[][] w = new String[4][44];
     for (int i=0; i<4; i++) {
-      w[0][i] = keyMatrix[0][i];
-      w[1][i] = keyMatrix[1][i];
-      w[2][i] = keyMatrix[2][i];
-      w[3][i] = keyMatrix[3][i];
+      w[i][0] = keyMatrix[0][i];
+      w[i][1] = keyMatrix[1][i];
+      w[i][2] = keyMatrix[2][i];
+      w[i][3] = keyMatrix[3][i];
     }
     // Step 3. Need to fill in the other 40 columns
     for (int j=4; j<44; j++) {
       // Step 3a. If col index j is not multiple of 4 do XOR
       if ((j % 4) != 0) {
-        w[0][j] = Long.toHexString(Long.parseLong(w[0][j-4], 16)^Long.parseLong(w[0][j-1], 16)).toUpperCase();
-        w[1][j] = Long.toHexString(Long.parseLong(w[1][j-4], 16)^Long.parseLong(w[1][j-1], 16)).toUpperCase();
-        w[2][j] = Long.toHexString(Long.parseLong(w[2][j-4], 16)^Long.parseLong(w[2][j-1], 16)).toUpperCase();
-        w[3][j] = Long.toHexString(Long.parseLong(w[3][j-4], 16)^Long.parseLong(w[3][j-1], 16)).toUpperCase();
-      } else {
-        System.out.println("W: ");
-        for (int s=0; s<w.length; s++) {
-          System.out.println(Arrays.toString(w[s]));
+        for (int r=0; r<4; r++) {
+          w[r][j] = xorHex(w[r][j-4], w[r][j-1]); 
+//          System.out.println(w[r][j]);
         }
-
+      }
+      // Step 3b. If the column index j is a multiple of 4 
+      else {
         int round = j / 4;
-        
         String[] wNew = new String[4];
-        System.out.println("Round: " + round);
-        System.out.println("RCON: " + aesRcon(round));
-        System.out.println(w[1][j-1]);
-        System.out.println("SCON: " + aesSbox(w[1][j-1]));
-        wNew[0] = Long.toHexString(Long.parseLong(aesRcon(round), 16)^Long.parseLong(aesSbox(w[1][j-1]), 16)).toUpperCase();
+        wNew[0] = xorHex(aesRcon(round), aesSbox(w[1][j-1])); 
         wNew[1] = aesSbox(w[2][j-1]);
         wNew[2] = aesSbox(w[3][j-1]);
         wNew[3] = aesSbox(w[0][j-1]);
-
-        w[0][j] = Long.toHexString((Long.parseLong(w[0][j-4], 16)^Long.parseLong(wNew[0], 16))).toUpperCase();
-        w[1][j] = Long.toHexString((Long.parseLong(w[1][j-4], 16)^Long.parseLong(wNew[1], 16))).toUpperCase();
-        w[2][j] = Long.toHexString((Long.parseLong(w[2][j-4], 16)^Long.parseLong(wNew[2], 16))).toUpperCase();
-        w[3][j] = Long.toHexString((Long.parseLong(w[3][j-4], 16)^Long.parseLong(wNew[3], 16))).toUpperCase();
+        for (int r=0; r<4; r++) {
+          w[r][j] = xorHex(w[r][j-4], wNew[r]);
+        }
       }
     }
-
+    
     String[] out = new String[11];
     for (int l=0; l<11; l++) {
       String key = "";
@@ -114,6 +100,11 @@ class AESCipher {
       out[l] = key;
     }
     return out;
+  }
+
+  static String xorHex(String a, String b) {
+    int result = Integer.parseInt(a, 16) ^ Integer.parseInt(b, 16);
+    return Integer.toHexString(result).toUpperCase();
   }
 
   /** matricize
@@ -166,6 +157,7 @@ class AESCipher {
     String[] matrix = aesRoundKeys("5468617473206D79204B756E67204675");
     for (int i=0; i<11; i++)
       System.out.println(matrix[i]); 
+    
   }
 
 }
