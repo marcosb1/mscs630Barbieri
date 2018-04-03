@@ -53,8 +53,10 @@ class AESCipher {
   };
 
   static String[][] aesRoundKeys(String KeyHex) {
+    System.out.println(KeyHex);
     // Step 1a. convert our string into a 4x4 matrix
     String[][] keyMatrix = matricize(KeyHex);
+    
     // Step 1b. form a 4x44 matrix where every entry contains hex pairs 
     // Step 2. Take AES key and make it be the first four columns of w
     String[][] w = new String[4][44];
@@ -102,7 +104,6 @@ class AESCipher {
       return null;
     }
         
-
     String[][] matrix = new String[4][4];
     
     int row = 0;
@@ -111,10 +112,11 @@ class AESCipher {
     while (hexPointer < inStr.length()) {
       // we are returning a String matrix, so we need to make sure its a String  
       String hexPair = Character.toString(inStr.charAt(hexPointer)) + Character.toString(inStr.charAt(hexPointer + 1));      
+      System.out.println("Row: " + row);
+      System.out.println("Col: " + col); 
       matrix[row][col] = hexPair;
-      
       col++;
-      if (col > 4) {
+      if (col >= 4) {
         row++;
         col = 0;
       }
@@ -135,7 +137,7 @@ class AESCipher {
   }
 
   public static void main(String[] args) {
-    String[][] matrix = matricize("5468617473206D79204B756E67204675");
+    String[][] matrix = aesRoundKeys("5468617473206D79204B756E67204675");
     for (int i=0; i<4; i++)
       System.out.println(Arrays.toString(matrix[i])); 
   }
