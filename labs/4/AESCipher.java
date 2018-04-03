@@ -69,13 +69,22 @@ class AESCipher {
     for (int j=4; j<44; j++) {
       // Step 3a. If col index j is not multiple of 4 do XOR
       if ((j % 4) != 0) {
-        w[0][j] = "" + Long.parseLong(w[0][j-4], 16)^Long.parseLong(w[0]w[j-1]);
-        w[1][j] = "" + Long.parseLong(w[1][j-4], 16)^Long.parseLong(w[1]w[j-1]);
-        w[2][j] = "" + Long.parseLong(w[2][j-4], 16)^Long.parseLong(w[2]w[j-1]);
-        w[3][j] = "" + Long.parseLong(w[3][j-4], 16)^Long.parseLong(w[3]w[j-1]);
+        w[0][j] = "" + (Long.parseLong(w[0][j-4], 16)^Long.parseLong(w[0][j-1]));
+        w[1][j] = "" + (Long.parseLong(w[1][j-4], 16)^Long.parseLong(w[1][j-1]));
+        w[2][j] = "" + (Long.parseLong(w[2][j-4], 16)^Long.parseLong(w[2][j-1]));
+        w[3][j] = "" + (Long.parseLong(w[3][j-4], 16)^Long.parseLong(w[3][j-1]));
+      } else {
+        String[] wNew = { w[1][j-1], w[2][j-1], w[3][j-1], w[0][j-1] };
+        for (int k=0; k<4; k++) {
+          wNew[k] = "" + (Long.parseLong(aesSbox(wNew[k]), 16)^Long.parseLong(Character.toString(rcon[(j/4)]), 16));
+        }
+        w[0][j] = "" + (Long.parseLong(w[0][j-4], 16)^Long.parseLong(wNew[0]));
+        w[1][j] = "" + (Long.parseLong(w[1][j-4], 16)^Long.parseLong(wNew[1]));
+        w[2][j] = "" + (Long.parseLong(w[2][j-4], 16)^Long.parseLong(wNew[2]));
+        w[3][j] = "" + (Long.parseLong(w[3][j-4], 16)^Long.parseLong(wNew[3]));
       }
     }
-    return null;
+    return w;
   }
 
   /** matricize
@@ -126,7 +135,7 @@ class AESCipher {
   }
 
   public static void main(String[] args) {
-    String[][] matrix = matricize("FF8DAC");
+    String[][] matrix = matricize("5468617473206D79204B756E67204675");
     for (int i=0; i<4; i++)
       System.out.println(Arrays.toString(matrix[i])); 
   }
