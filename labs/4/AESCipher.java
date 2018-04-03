@@ -53,7 +53,6 @@ class AESCipher {
   };
 
   static String[] aesRoundKeys(String KeyHex) {
-    System.out.println(KeyHex);
     // Step 1a. convert our string into a 4x4 matrix
     String[][] keyMatrix = matricize(KeyHex);
    
@@ -89,6 +88,7 @@ class AESCipher {
       }
     }
     
+    // Lets format the output 
     String[] out = new String[11];
     for (int l=0; l<11; l++) {
       String key = "";
@@ -104,7 +104,8 @@ class AESCipher {
 
   static String xorHex(String a, String b) {
     int result = Integer.parseInt(a, 16) ^ Integer.parseInt(b, 16);
-    return Integer.toHexString(result).toUpperCase();
+    String hexString = Integer.toHexString(result).toUpperCase();
+    return hexString.length() == 1 ? "0" + hexString : hexString;
   }
 
   /** matricize
@@ -145,19 +146,19 @@ class AESCipher {
 
   static String aesSbox(String inHex) {
     int sboxValue = (int) sbox[Integer.parseInt(inHex, 16)];
-    return Integer.toHexString(sboxValue).toUpperCase();
+    String hexString = Integer.toHexString(sboxValue).toUpperCase();
+    return hexString.length() == 1 ? "0" + hexString : hexString;
   }
 
   static String aesRcon(int round) {
     char rconChar = rcon[round];
-    return Integer.toHexString((int) rconChar).toUpperCase();
+    String hexString = Integer.toHexString((int) rconChar).toUpperCase();
+    return hexString.length() == 1 ? "0" + hexString : hexString;
   }
-
+  
   public static void main(String[] args) {
     String[] matrix = aesRoundKeys("5468617473206D79204B756E67204675");
-    for (int i=0; i<11; i++)
-      System.out.println(matrix[i]); 
-    
-  }
-
+    for (int i=0; i<matrix.length; i++)
+      System.out.println(matrix[i]);
+  } 
 }
