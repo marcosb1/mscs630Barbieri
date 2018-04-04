@@ -6,7 +6,7 @@
  * due date: 04/03/2018
  * version: 0.1
  *
- *
+ * Implementation of the AES Cipher 
  */
 
 import java.util.Scanner;
@@ -52,11 +52,19 @@ class AESCipher {
       0x61, 0xc2, 0x9f, 0x25, 0x4a, 0x94, 0x33, 0x66, 0xcc, 0x83, 0x1d, 0x3a, 0x74, 0xe8, 0xcb, 0x8d
   };
 
+  /** aesRoundKeys
+   * This method will perform all the "logic" to create a set of round keys based on an input hex plaintext
+   *
+   * parameter:
+   *  KeyHex: Hexadecimal String containing the plaintext to be encrypted
+   * return:
+   *  out: String array containing the created keys; I chose to return a String array instead of a String, 
+   *       because the output presents a "Set" of keys which means that the corresponding data structure is
+   *       an array; any formatting for output can be done by the driver later on
+   */
   static String[] aesRoundKeys(String KeyHex) {
-    // Step 1a. convert our string into a 4x4 matrix
-    String[][] keyMatrix = matricize(KeyHex);
-   
-    // Step 1b. form a 4x44 matrix where every entry contains hex pairs 
+    // Step 1. convert our string into a 4x4 matrix
+    String[][] keyMatrix = matricize(KeyHex); 
     // Step 2. Take AES key and make it be the first four columns of w
     String[][] w = new String[4][44];
     for (int i=0; i<4; i++) {
@@ -71,7 +79,6 @@ class AESCipher {
       if ((j % 4) != 0) {
         for (int r=0; r<4; r++) {
           w[r][j] = xorHex(w[r][j-4], w[r][j-1]); 
-//          System.out.println(w[r][j]);
         }
       }
       // Step 3b. If the column index j is a multiple of 4 
@@ -88,7 +95,7 @@ class AESCipher {
       }
     }
     
-    // Lets format the output 
+    // Now we need to grab each 4x4 box from within the matrix we created 
     String[] out = new String[11];
     for (int l=0; l<11; l++) {
       String key = "";
@@ -102,6 +109,17 @@ class AESCipher {
     return out;
   }
 
+  /** xorHex
+   * Helper function used to perform the XOR operation; We need this because 
+   * we are dealing with base 16 so let the function handle all of the parsing
+   * TODO: add a parameter for ther user to specify the base, to maximize reusabilty
+   *
+   * parameters:
+   *  a: The first hex pair in the XOR operation
+   *  b: The second hex pair in the XOR operation
+   * return:
+   *  a ^ b
+   */
   static String xorHex(String a, String b) {
     int result = Integer.parseInt(a, 16) ^ Integer.parseInt(b, 16);
     String hexString = Integer.toHexString(result).toUpperCase();
@@ -111,7 +129,7 @@ class AESCipher {
   /** matricize
    * Will transform a String into a matrix (2 dimensional string array)
    * 
-   * parameter:
+   * parameters:
    *  inStr: String containing 16 hex pairs (32 characters)
    * return:
    *  matrix: 2-dimensional 4x4 String array containing the 
@@ -144,21 +162,32 @@ class AESCipher {
     return matrix;
   }
 
+  /** aesSbox
+   * Function to look up any hex pair provided in the S-Box table
+   *
+   * parameters:
+   *  inHex: String containing the Hex pair
+   * return:
+   *  S(inHex) 
+   */
   static String aesSbox(String inHex) {
     int sboxValue = (int) sbox[Integer.parseInt(inHex, 16)];
     String hexString = Integer.toHexString(sboxValue).toUpperCase();
     return hexString.length() == 1 ? "0" + hexString : hexString;
   }
 
+  /** aesRcon
+   * Function to look up round in RCON table
+   *
+   * parameters:
+   *  round: integer representing the index of the lookup in the Rcon table
+   * return:
+   *  Rcon(i) | i = round 
+   */
   static String aesRcon(int round) {
     char rconChar = rcon[round];
     String hexString = Integer.toHexString((int) rconChar).toUpperCase();
     return hexString.length() == 1 ? "0" + hexString : hexString;
   }
   
-  public static void main(String[] args) {
-    String[] matrix = aesRoundKeys("5468617473206D79204B756E67204675");
-    for (int i=0; i<matrix.length; i++)
-      System.out.println(matrix[i]);
-  } 
 }
