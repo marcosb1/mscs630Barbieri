@@ -77,11 +77,11 @@ class ViewController: UIViewController, UITextFieldDelegate, UIImagePickerContro
     @IBAction func setDefaultLabelText(_ sender: UIButton) {
         imageNameLabel.text = "Default Text"
         
-        //guard let plaintextImage = imageView.image else {
-        //    return
-        //}
+        guard let plaintextImage = imageView.image else {
+            return
+        }
         
-        //plaintextImage
+        plaintextImage.
     }
     
 }
