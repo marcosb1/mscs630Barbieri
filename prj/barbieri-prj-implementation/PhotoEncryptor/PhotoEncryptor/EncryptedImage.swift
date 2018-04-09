@@ -59,7 +59,8 @@ class EncryptedImage {
         var data = NSData(bytes: rawData, length: sizeOfRawDataInBytes)
         
         print("Data Begins...", terminator: "\n")
-        print(data, terminator: "\n")
+        let hexString = NSMutableString()
+        print(hexString, terminator: "\n")
         print("Data Ends.", terminator: "\n")
         //data = encrypted ? data.AES256DecryptWithKey(key) : data.AES256EncryptWithKey(key)
         //data = data.AES256EncryptWithKey(key)
