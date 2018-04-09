@@ -40,14 +40,37 @@ class EncryptedImage {
             return
         }
         
-        let rawData = UnsafeMutableRawPointer.allocate(byteCount: sizeOfRawDataInBytes, alignment: 1)
+        var rawData = UnsafeMutableRawPointer.allocate(byteCount: sizeOfRawDataInBytes, alignment: 1)
         
-        let context = CGContext.init(data: rawData,
+        guard let context = CGContext.init(data: rawData,
                                      width: plainImgWidth,
                                      height: plainImgHeight,
                                      bitsPerComponent: bitsPerComponent,
                                      bytesPerRow: plainImgBytesPerRow,
                                      space: colorSpace,
-                                     bitmapInfo: CGBitmapInfo(rawValue: plainImgAlphaInfo.rawValue).rawValue | CGBitmapInfo.byteOrder32Big.rawValue)
+                                     bitmapInfo: CGBitmapInfo(rawValue: plainImgAlphaInfo.rawValue).rawValue | CGBitmapInfo.byteOrder32Big.rawValue) else {
+        
+            return
+        }
+        
+        let rect: CGRect = CGRect.init(x: 0, y: 0, width: CGFloat(plainImgWidth), height: CGFloat(plainImgHeight))
+        context.draw(image, in: rect, byTiling: false)
+         
+        var data = NSData(bytes: rawData, length: sizeOfRawDataInBytes)
+        
+        print("Data Begins...", terminator: "\n")
+        print(data, terminator: "\n")
+        print("Data Ends.", terminator: "\n")
+        //data = encrypted ? data.AES256DecryptWithKey(key) : data.AES256EncryptWithKey(key)
+        //data = data.AES256EncryptWithKey(key)
+
+        /**rawData = data.mutableCopy().mutableBytes
+
+        context = CGBitmapContextCreate(rawData, width, height, bitsPerComponent, bytesPerRow, colorSpace, CGBitmapInfo(alphaInfo.rawValue))
+        imageRef = CGBitmapContextCreateImage(context);
+
+        let encryptedImage = UIImage(CGImage: imageRef)e
+
+        image = !encrypted */
     }
 }
