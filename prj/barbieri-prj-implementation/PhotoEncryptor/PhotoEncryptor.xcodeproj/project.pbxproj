@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		DF8DAF05207ADB7000000591 /* EncryptedImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF8DAF04207ADB7000000591 /* EncryptedImage.swift */; };
 		DFA7B96920694941004E9CD7 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFA7B96820694941004E9CD7 /* AppDelegate.swift */; };
 		DFA7B96B20694941004E9CD7 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFA7B96A20694941004E9CD7 /* ViewController.swift */; };
 		DFA7B96E20694941004E9CD7 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DFA7B96C20694941004E9CD7 /* Main.storyboard */; };
@@ -26,6 +27,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		DF8DAF04207ADB7000000591 /* EncryptedImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EncryptedImage.swift; sourceTree = "<group>"; };
 		DFA7B96520694940004E9CD7 /* PhotoEncryptor.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PhotoEncryptor.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DFA7B96820694941004E9CD7 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		DFA7B96A20694941004E9CD7 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -83,6 +85,7 @@
 				DFA7B96F20694942004E9CD7 /* Assets.xcassets */,
 				DFA7B97120694942004E9CD7 /* LaunchScreen.storyboard */,
 				DFA7B97420694942004E9CD7 /* Info.plist */,
+				DF8DAF04207ADB7000000591 /* EncryptedImage.swift */,
 			);
 			path = PhotoEncryptor;
 			sourceTree = "<group>";
@@ -199,6 +202,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DF8DAF05207ADB7000000591 /* EncryptedImage.swift in Sources */,
 				DFA7B96B20694941004E9CD7 /* ViewController.swift in Sources */,
 				DFA7B96920694941004E9CD7 /* AppDelegate.swift in Sources */,
 			);

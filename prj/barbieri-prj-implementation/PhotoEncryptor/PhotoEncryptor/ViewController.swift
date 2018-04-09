@@ -81,7 +81,11 @@ class ViewController: UIViewController, UITextFieldDelegate, UIImagePickerContro
             return
         }
         
-        plaintextImage.
+        guard let colors = plaintextImage.cgImage?.colorSpace else {
+            return
+        }
+        
+        
     }
     
 }
