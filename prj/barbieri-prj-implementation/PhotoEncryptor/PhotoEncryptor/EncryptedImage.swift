@@ -8,6 +8,12 @@
 
 import UIKit
 
+extension Data {
+    var bytes: [UInt8] {
+        return [UInt8](self)
+    }
+}
+
 class EncryptedImage {
     
     private var image: CGImage
@@ -59,12 +65,15 @@ class EncryptedImage {
         var data = NSData(bytes: rawData, length: sizeOfRawDataInBytes)
         
         print("Data Begins...", terminator: "\n")
-        let hexString = NSMutableString()
-        print(hexString, terminator: "\n")
+        NSLog("%@", data)
+        var safeData: Data = data as Data
+        for byte in safeData.bytes {
+            print(byte, terminator: " ")
+        }
         print("Data Ends.", terminator: "\n")
         //data = encrypted ? data.AES256DecryptWithKey(key) : data.AES256EncryptWithKey(key)
         //data = data.AES256EncryptWithKey(key)
-
+        
         /**rawData = data.mutableCopy().mutableBytes
 
         context = CGBitmapContextCreate(rawData, width, height, bitsPerComponent, bytesPerRow, colorSpace, CGBitmapInfo(alphaInfo.rawValue))
