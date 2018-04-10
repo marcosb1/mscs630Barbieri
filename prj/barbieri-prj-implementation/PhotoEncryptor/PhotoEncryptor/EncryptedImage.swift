@@ -7,7 +7,6 @@
 //
 
 import UIKit
-
 extension UIImage {
     func getPixelColor(pos: CGPoint) -> UIColor? {
         
@@ -66,6 +65,7 @@ class ImageEncryptor {
     }
     
     func encrypt(in image: UIImage, str plaintext: String) -> UIImage? {
+        /*
         print("Plaintext: \(toBase16(str: plaintext))")
         
         let cycle = 0
@@ -79,72 +79,82 @@ class ImageEncryptor {
                 
                 print("Cycle: \(cycle) Row: \(row) Column: \(col)", terminator: "\n")
                 print(color.toHexString)
+                
             }
         }
- 
-        return nil
-    }
-    
-    /*
-    func encrypt() {
-        let plainImgWidth = image.width
-        let plainImgHeight = image.height
+        */
+        
+        guard let coverImage = image.cgImage else {
+            print("[ERROR] CGImage canot be retrieved.")
+            return nil
+        }
+        
+        let plainImgWidth = coverImage.width
+        let plainImgHeight = coverImage.height
         let colorSpace = CGColorSpaceCreateDeviceRGB()
         let bytesPerPixel: Int = 4
         let plainImgBytesPerRow: Int = bytesPerPixel * plainImgWidth
         let bitsPerComponent: Int = 8
         
-        let plainImgAlphaInfo = image.alphaInfo // this is what solved the issue.
+        let plainImgAlphaInfo = coverImage.alphaInfo // this is what solved the issue.
         
         let sizeOfRawDataInBytes: Int = Int(plainImgHeight * plainImgWidth * 4)
         
-        guard let plainImgDataProvider = image.dataProvider else {
+        guard let plainImgDataProvider = coverImage.dataProvider else {
             // image has no data provider ? what could this mean ?
-            return
+            print("[ERROR] Cannot retrieve data provider.")
+            return nil
         }
         
         guard let imgData = plainImgDataProvider.data else {
             // means the data is null
-            return
+            print("[ERROR] Cannot retrieve data from CGDataProvider.")
+            return nil
         }
-
+        
         var rawData = UnsafeMutableRawPointer.allocate(byteCount: sizeOfRawDataInBytes, alignment: 1)
-
-        guard let context = CGContext.init(data: rawData,
-                                     width: plainImgWidth,
-                                     height: plainImgHeight,
-                                     bitsPerComponent: bitsPerComponent,
-                                     bytesPerRow: plainImgBytesPerRow,
-                                     space: colorSpace,
-                                     bitmapInfo: CGBitmapInfo(rawValue: plainImgAlphaInfo.rawValue).rawValue | CGBitmapInfo.byteOrder32Big.rawValue) else {
-
-            return
+        
+        guard var context = CGContext.init(data: rawData,
+                                           width: plainImgWidth,
+                                           height: plainImgHeight,
+                                           bitsPerComponent: bitsPerComponent,
+                                           bytesPerRow: plainImgBytesPerRow,
+                                           space: colorSpace,
+                                           bitmapInfo: CGBitmapInfo(rawValue: plainImgAlphaInfo.rawValue).rawValue | CGBitmapInfo.byteOrder32Big.rawValue) else {
+                                            
+             print("[ERROR] Cannot create context.")
+             return nil
         }
-
+        
         let rect: CGRect = CGRect.init(x: 0, y: 0, width: CGFloat(plainImgWidth), height: CGFloat(plainImgHeight))
-        context.draw(image, in: rect, byTiling: false)
- 
+        context.draw(coverImage, in: rect, byTiling: false)
+        
         var data = NSData(bytes: rawData, length: sizeOfRawDataInBytes)
-
+        
         print("Data Begins...", terminator: "\n")
-        NSLog("%@", data)
+        //NSLog("%@", data)
         var safeData: Data = data as Data
-        for byte in safeData.bytes {
-            print(byte, terminator: " ")
+        for i in 0..<safeData.count {
+            print(safeData[i], terminator: " ")
+            if (i + 1) % 3 == 0 {
+                safeData[i] = 0
+            }
         }
         print("Data Ends.", terminator: "\n")
-
-        //data = encrypted ? data.AES256DecryptWithKey(key) : data.AES256EncryptWithKey(key)
-        //data = data.AES256EncryptWithKey(key)
-
-        /**rawData = data.mutableCopy().mutableBytes
-
-        context = CGBitmapContextCreate(rawData, width, height, bitsPerComponent, bytesPerRow, colorSpace, CGBitmapInfo(alphaInfo.rawValue))
-        imageRef = CGBitmapContextCreateImage(context);
-
-        let encryptedImage = UIImage(CGImage: imageRef)e
-
-        image = !encrypted */
+        
+        context = CGBitmapContextCreate(rawData,
+                                        plainImgWidth,
+                                        plainImgHeight,
+                                        bitsPerComponent,
+                                        plainImgBytesPerRow,
+                                        colorSpace,
+                                        CGBitmapInfo(rawValue: plainImgAlphaInfo.rawValue))
+        
+        guard let newImg = CGContext.makeImage(context) else {
+            print("[ERROR] Could not create encrypted image.")
+            return nil
+        }
+        
+        return UIImage(CGImage: newImg)
     }
-     */
 }
