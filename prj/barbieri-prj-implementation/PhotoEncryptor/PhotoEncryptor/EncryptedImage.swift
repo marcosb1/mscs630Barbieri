@@ -142,19 +142,23 @@ class ImageEncryptor {
         }
         print("Data Ends.", terminator: "\n")
         
-        context = CGBitmapContextCreate(rawData,
-                                        plainImgWidth,
-                                        plainImgHeight,
-                                        bitsPerComponent,
-                                        plainImgBytesPerRow,
-                                        colorSpace,
-                                        CGBitmapInfo(rawValue: plainImgAlphaInfo.rawValue))
+        guard let newContext = CGContext.init(data: rawData,
+                                              width: plainImgWidth,
+                                              height: plainImgHeight,
+                                              bitsPerComponent: bitsPerComponent,
+                                              bytesPerRow: plainImgBytesPerRow,
+                                              space: colorSpace,
+                                              bitmapInfo: CGBitmapInfo(rawValue: plainImgAlphaInfo.rawValue).rawValue) else {
+            print("[ERROR] New context could not be created.")
+            return nil
+        }
         
-        guard let newImg = CGContext.makeImage(context) else {
+        guard let newImg = newContext.makeImage() else {
             print("[ERROR] Could not create encrypted image.")
             return nil
         }
         
-        return UIImage(CGImage: newImg)
+        let returnImg = UIImage.init(CGImage: newImg)
+        return returnImg
     }
 }
