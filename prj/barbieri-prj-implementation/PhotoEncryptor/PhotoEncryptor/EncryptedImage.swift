@@ -158,7 +158,6 @@ class ImageEncryptor {
             return nil
         }
         
-        let returnImg = UIImage.init(CGImage: newImg)
-        return returnImg
+        return UIImage.init(cgImage: newImg)
     }
 }
