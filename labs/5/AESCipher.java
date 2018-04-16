@@ -282,8 +282,8 @@ class AESCipher {
   static String[][] AESMixColumn(String[][] inStateHex) {
     String[][] outStateHex = new String[4][4];
 
-    for (int row = 0; row < inStateHex.length; row++) {
-      outStateHex[row] = galoisMultHelper(inStateHex[row]);
+    for (int col = 0; col < inStateHex.length; col++) {
+      outStateHex[col] = galoisMultHelper(inStateHex[row]);
     }
 
     return outStateHex;
@@ -300,9 +300,21 @@ class AESCipher {
       { 3, 1, 1, 2 },
     };
 
-    
+    for (int i = 0; i < out.length; i++) {
+      out[i] = Integer.toHexString(galoisMult(d[i][0], in[0])^galoisMult(d[i][1], in[1])^galoisMult(d[i][2], in[2])^galoisMult(d[i][3], in[2]));
+    }
 
     return out;
+  }
+
+  static int galoisMult(int multiplier, String hex) {
+    if (multiplier == 3) {
+      return (int) mult3Lookup[Integer.parseInt(hex, 16)];
+    } else if (multiplier == 2) {
+      return (int) mult2Lookup[Integer.parseInt(hex, 16)];
+    } else {
+      return Integer.parseInt(hex, 16);
+    }
   }
 
   static String[][] columnMatricize(String textHex) {
