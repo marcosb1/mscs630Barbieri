@@ -247,6 +247,8 @@ class AESCipher {
    *
    * parameter:
    *  inStateHex: matrix containing
+   * returns:
+   *  outStateHex: state of matrix after nibble sub performed
    */
   static String[][] AESNibbleSub(String[][] inStateHex) {
     String[][] outStateHex = new String[4][4];
@@ -260,7 +262,14 @@ class AESCipher {
     return outStateHex;
   }
 
-  /**
+  /** AESShiftRows
+   * Performs the Shift Row operation of the AES to transform the input state
+   * matrix into output state.
+   *
+   * parameter:
+   *  inStateHex: matrix containing the data to be transofrmed
+   * returns:
+   *  outStateHex: state of matrix after shift rows performed
    */
   static String[][] AESShiftRows(String[][] inStateHex) {
     String[][] outStateHex = new String[4][4];
@@ -277,7 +286,14 @@ class AESCipher {
     return outStateHex;
   }
 
-  /**
+  /** AESMixColumn
+   * Performs the Mix Column operation of AES to transform input state into output
+   * state, using galois multiplication.
+   *
+   * parameter:
+   *  inStateHex: matrix containing the data to be transofrmed
+   * returns:
+   *  outStateHex: state of matrix after mix column performed
    */
   static String[][] AESMixColumn(String[][] inStateHex) {
     String[][] outStateHex = new String[4][4];
@@ -297,7 +313,16 @@ class AESCipher {
     return outStateHex;
   }
 
-  /**
+  /** GMul
+   * Helper function containing the lookup for the galois multiplication, instead
+   * of actually performing the operation. Its arguably faster this way.
+   *
+   * parameters:
+   *  multiplier: since we are only dealing with the 3, 2, and 1 multipliers we
+   *    simply check what the mulitplier will be
+   *  hex: hex to perform the galois multiplication on
+   * returns:
+   *  {multiplier . hex}
    */
   static int GMul(int multiplier, String hex) {
     if (multiplier == 3) {
@@ -309,7 +334,13 @@ class AESCipher {
     return Integer.parseInt(hex, 16);
   }
 
-  /**
+  /** columnMatricize
+   * Helper function to transform string into column-wise matrix
+   *
+   * parameter:
+   *  textHex: plaintext to be transformed
+   * returns:
+   *  hexMatrix: column-wise matrix containing the 4x4 string
    */
   static String[][] columnMatricize(String textHex) {
     String[][] hexMatrix = new String[4][4];
@@ -325,7 +356,13 @@ class AESCipher {
     return hexMatrix;
   }
 
-  /**
+  /** columnDeMatricize
+   * Helper function to turn 4x4 column-wise matrix back into string
+   *
+   * parameter:
+   *  hexMatrix: 4x4 column-wise matrix containing the string hex pairs
+   * returns:
+   *  outStr: original string that was converted to matrix
    */
   static String columnDeMatricize(String[][] hexMatrix) {
     String outStr = "";
@@ -339,7 +376,11 @@ class AESCipher {
     return outStr;
   }
 
-  /**
+  /** printMatrix
+   * Helper function to debug matrices
+   *
+   * parameter:
+   *  in: matrix to be printed
    */
   static void printMatrix(String[][] in) {
     for (int i = 0; i < in.length; i++) {
@@ -347,7 +388,15 @@ class AESCipher {
     }
   }
 
-  /**
+  /** AES
+   * Will perform AES encryption using the aesRoundKeys generated and will encrypt
+   * the hex given along with the key.
+   *
+   * parameters:
+   *  pTextHex: plaintext string in hexidecimal
+   *  keyHex: key string in hexidecimal
+   * returns:
+   *  cTextHex: AES encrypted plaintext using provided key
    */
   static String AES(String pTextHex, String keyHex) {
     String[][] pTextHexMatrix = columnMatricize(pTextHex);
