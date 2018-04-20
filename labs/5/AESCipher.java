@@ -90,62 +90,7 @@ class AESCipher {
     0x0b,0x08,0x0d,0x0e,0x07,0x04,0x01,0x02,0x13,0x10,0x15,0x16,0x1f,0x1c,0x19,0x1a
   };
 
-  /** aesRoundKeys
-   * This method will perform all the "logic" to create a set of round keys based on an input hex plaintext
-   *
-   * parameter:
-   *  KeyHex: Hexadecimal String containing the plaintext to be encrypted
-   * return:
-   *  out: String array containing the created keys; I chose to return a String array instead of a String,
-   *       because the output presents a "Set" of keys which means that the corresponding data structure is
-   *       an array; any formatting for output can be done by the driver later on
-   */
-  static String[] aesRoundKeys(String KeyHex) {
-    // Step 1. convert our string into a 4x4 matrix
-    String[][] keyMatrix = matricize(KeyHex);
-    // Step 2. Take AES key and make it be the first four columns of w
-    String[][] w = new String[4][44];
-    for (int i = 0; i < 4; i++) {
-      w[i][0] = keyMatrix[0][i];
-      w[i][1] = keyMatrix[1][i];
-      w[i][2] = keyMatrix[2][i];
-      w[i][3] = keyMatrix[3][i];
-    }
-    // Step 3. Need to fill in the other 40 columns
-    for (int j=4; j<44; j++) {
-      // Step 3a. If col index j is not multiple of 4 do XOR
-      if ((j % 4) != 0) {
-        for (int r = 0; r < 4; r++) {
-          w[r][j] = xorHex(w[r][j-4], w[r][j-1]);
-        }
-      }
-      // Step 3b. If the column index j is a multiple of 4
-      else {
-        int round = j / 4;
-        String[] wNew = new String[4];
-        wNew[0] = xorHex(aesRcon(round), aesSbox(w[1][j-1]));
-        wNew[1] = aesSbox(w[2][j-1]);
-        wNew[2] = aesSbox(w[3][j-1]);
-        wNew[3] = aesSbox(w[0][j-1]);
-        for (int r=0; r<4; r++) {
-          w[r][j] = xorHex(w[r][j-4], wNew[r]);
-        }
-      }
-    }
-
-    // Now we need to grab each 4x4 box from within the matrix we created
-    String[] out = new String[11];
-    for (int l=0; l<11; l++) {
-      String key = "";
-      for (int m = l*4; m < ((l*4)+4); m++) {
-        for (int n = 0; n < 4; n++) {
-          key += w[n][m];
-        }
-      }
-      out[l] = key;
-    }
-    return out;
-  }
+  //MARK: Helper functions
 
   /** xorHex
    * Helper function used to perform the XOR operation; We need this because
@@ -228,7 +173,148 @@ class AESCipher {
     return hexString.length() == 1 ? "0" + hexString : hexString;
   }
 
-  /**
+  /** GMul
+   * Helper function containing the lookup for the galois multiplication, instead
+   * of actually performing the operation. Its arguably faster this way.
+   *
+   * parameters:
+   *  multiplier: since we are only dealing with the 3, 2, and 1 multipliers we
+   *    simply check what the mulitplier will be
+   *  hex: hex to perform the galois multiplication on
+   * returns:
+   *  {multiplier . hex}
+   */
+  static int GMul(int multiplier, String hex) {
+    if (multiplier == 3) {
+      return (int) mult3Lookup[Integer.parseInt(hex, 16)];
+    } else if (multiplier == 2) {
+      return (int) mult2Lookup[Integer.parseInt(hex, 16)];
+    }
+
+    return Integer.parseInt(hex, 16);
+  }
+
+  /** columnMatricize
+   * Helper function to transform string into column-wise matrix
+   *
+   * parameter:
+   *  textHex: plaintext to be transformed
+   * returns:
+   *  hexMatrix: column-wise matrix containing the 4x4 string
+   */
+  static String[][] columnMatricize(String textHex) {
+    String[][] hexMatrix = new String[4][4];
+
+    int strIndex = 0;
+    for (int col = 0; col < 4; col++) {
+      for (int row = 0; row < 4; row++) {
+        hexMatrix[row][col] = "" + textHex.charAt(strIndex) + textHex.charAt(strIndex + 1);
+        strIndex += 2;
+      }
+    }
+
+    return hexMatrix;
+  }
+
+  /** columnDeMatricize
+   * Helper function to turn 4x4 column-wise matrix back into string
+   *
+   * parameter:
+   *  hexMatrix: 4x4 column-wise matrix containing the string hex pairs
+   * returns:
+   *  outStr: original string that was converted to matrix
+   */
+  static String columnDeMatricize(String[][] hexMatrix) {
+    String outStr = "";
+
+    for (int col = 0; col < 4; col++) {
+      for (int row = 0; row < 4; row++) {
+        outStr += hexMatrix[row][col];
+      }
+    }
+
+    return outStr;
+  }
+
+  /** printMatrix
+   * Helper function to debug matrices
+   *
+   * parameter:
+   *  in: matrix to be printed
+   */
+  static void printMatrix(String[][] in) {
+    for (int i = 0; i < in.length; i++) {
+      System.out.println(Arrays.toString(in[i]));
+    }
+  }
+
+  //MARK: AES functions
+
+  /** aesRoundKeys
+   * This method will perform all the "logic" to create a set of round keys based on an input hex plaintext
+   *
+   * parameter:
+   *  KeyHex: Hexadecimal String containing the plaintext to be encrypted
+   * return:
+   *  out: String array containing the created keys; I chose to return a String array instead of a String,
+   *       because the output presents a "Set" of keys which means that the corresponding data structure is
+   *       an array; any formatting for output can be done by the driver later on
+   */
+  static String[] aesRoundKeys(String KeyHex) {
+    // Step 1. convert our string into a 4x4 matrix
+    String[][] keyMatrix = matricize(KeyHex);
+    // Step 2. Take AES key and make it be the first four columns of w
+    String[][] w = new String[4][44];
+    for (int i = 0; i < 4; i++) {
+      w[i][0] = keyMatrix[0][i];
+      w[i][1] = keyMatrix[1][i];
+      w[i][2] = keyMatrix[2][i];
+      w[i][3] = keyMatrix[3][i];
+    }
+    // Step 3. Need to fill in the other 40 columns
+    for (int j=4; j<44; j++) {
+      // Step 3a. If col index j is not multiple of 4 do XOR
+      if ((j % 4) != 0) {
+        for (int r = 0; r < 4; r++) {
+          w[r][j] = xorHex(w[r][j-4], w[r][j-1]);
+        }
+      }
+      // Step 3b. If the column index j is a multiple of 4
+      else {
+        int round = j / 4;
+        String[] wNew = new String[4];
+        wNew[0] = xorHex(aesRcon(round), aesSbox(w[1][j-1]));
+        wNew[1] = aesSbox(w[2][j-1]);
+        wNew[2] = aesSbox(w[3][j-1]);
+        wNew[3] = aesSbox(w[0][j-1]);
+        for (int r=0; r<4; r++) {
+          w[r][j] = xorHex(w[r][j-4], wNew[r]);
+        }
+      }
+    }
+
+    // Now we need to grab each 4x4 box from within the matrix we created
+    String[] out = new String[11];
+    for (int l=0; l<11; l++) {
+      String key = "";
+      for (int m = l*4; m < ((l*4)+4); m++) {
+        for (int n = 0; n < 4; n++) {
+          key += w[n][m];
+        }
+      }
+      out[l] = key;
+    }
+    return out;
+  }
+
+  /** AESStateXOR
+   * XORing the key to the plaintext hex
+   *
+   * parameters:
+   *  sHex: plaintext hex after k rounds
+   *  keyHex: hex converted key
+   * returns:
+   *  outStateHex: Hex matrix after round
    */
   static String[][] AESStateXOR(String[][] sHex, String[][] keyHex) {
     String[][] outStateHex = new String[4][4];
@@ -311,81 +397,6 @@ class AESCipher {
     }
 
     return outStateHex;
-  }
-
-  /** GMul
-   * Helper function containing the lookup for the galois multiplication, instead
-   * of actually performing the operation. Its arguably faster this way.
-   *
-   * parameters:
-   *  multiplier: since we are only dealing with the 3, 2, and 1 multipliers we
-   *    simply check what the mulitplier will be
-   *  hex: hex to perform the galois multiplication on
-   * returns:
-   *  {multiplier . hex}
-   */
-  static int GMul(int multiplier, String hex) {
-    if (multiplier == 3) {
-      return (int) mult3Lookup[Integer.parseInt(hex, 16)];
-    } else if (multiplier == 2) {
-      return (int) mult2Lookup[Integer.parseInt(hex, 16)];
-    }
-
-    return Integer.parseInt(hex, 16);
-  }
-
-  /** columnMatricize
-   * Helper function to transform string into column-wise matrix
-   *
-   * parameter:
-   *  textHex: plaintext to be transformed
-   * returns:
-   *  hexMatrix: column-wise matrix containing the 4x4 string
-   */
-  static String[][] columnMatricize(String textHex) {
-    String[][] hexMatrix = new String[4][4];
-
-    int strIndex = 0;
-    for (int col = 0; col < 4; col++) {
-      for (int row = 0; row < 4; row++) {
-        hexMatrix[row][col] = "" + textHex.charAt(strIndex) + textHex.charAt(strIndex + 1);
-        strIndex += 2;
-      }
-    }
-
-    return hexMatrix;
-  }
-
-  /** columnDeMatricize
-   * Helper function to turn 4x4 column-wise matrix back into string
-   *
-   * parameter:
-   *  hexMatrix: 4x4 column-wise matrix containing the string hex pairs
-   * returns:
-   *  outStr: original string that was converted to matrix
-   */
-  static String columnDeMatricize(String[][] hexMatrix) {
-    String outStr = "";
-
-    for (int col = 0; col < 4; col++) {
-      for (int row = 0; row < 4; row++) {
-        outStr += hexMatrix[row][col];
-      }
-    }
-
-    return outStr;
-  }
-
-  /** printMatrix
-   * Helper function to debug matrices
-   *
-   * parameter:
-   *  in: matrix to be printed
-   */
-  static void printMatrix(String[][] in) {
-    for (int i = 0; i < in.length; i++) {
-      System.out.println(Arrays.toString(in[i]));
-    }
   }
 
   /** AES
