@@ -321,6 +321,18 @@ class AESCipher {
     return hexMatrix;
   }
 
+  static String columnDeMatricize(String[][] hexMatrix) {
+    String outStr = "";
+
+    for (int col = 0; col < 4; col++) {
+      for (int row = 0; row < 4; row++) {
+        outStr += hexMatrix[row][col];
+      }
+    }
+
+    return outStr;
+  }
+
   /**
    */
   static void printMatrix(String[][] in) {
@@ -332,18 +344,25 @@ class AESCipher {
   /**
    */
   static String AES(String pTextHex, String keyHex) {
-    String cTextHex = "";
     String[][] pTextHexMatrix = columnMatricize(pTextHex);
     String[][] cTextHexMatrix = columnMatricize(keyHex);
 
-    String[][] addKey = AESStateXOR(pTextHexMatrix, cTextHexMatrix);
+    String[] roundKeys = aesRoundKeys(keyHex);
+    String[][] addKey = AESStateXOR(pTextHexMatrix, columnMatricize(roundKeys[0]));
+
+    for (int round = 1; round < roundKeys.length - 1; round++) {
+      String[][] nibbleSub = AESNibbleSub(addKey);
+      String[][] shiftRows = AESShiftRows(nibbleSub);
+      String[][] mixCols = AESMixColumn(shiftRows);
+
+      addKey = AESStateXOR(mixCols, columnMatricize(roundKeys[round]));
+    }
+
     String[][] nibbleSub = AESNibbleSub(addKey);
     String[][] shiftRows = AESShiftRows(nibbleSub);
-    //printMatrix(shiftRows);
-    String[][] mixCols = AESMixColumn(shiftRows);
-    printMatrix(mixCols);
+    addKey = AESStateXOR(shiftRows, columnMatricize(roundKeys[roundKeys.length - 1]));
 
-
+    String cTextHex = columnDeMatricize(addKey);
     return cTextHex;
   }
 
