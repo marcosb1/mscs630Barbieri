@@ -282,39 +282,29 @@ class AESCipher {
   static String[][] AESMixColumn(String[][] inStateHex) {
     String[][] outStateHex = new String[4][4];
 
-    for (int col = 0; col < inStateHex.length; col++) {
-      outStateHex[col] = galoisMultHelper(inStateHex[row]);
+    for (int c = 0; c < 4; c++) {
+        String d0 = Integer.toHexString(GMul(0x02, inStateHex[0][c]) ^ GMul(0x03, inStateHex[1][c]) ^ Integer.parseInt(inStateHex[2][c], 16) ^ Integer.parseInt(inStateHex[3][c], 16));
+        String d1 = Integer.toHexString(Integer.parseInt(inStateHex[0][c], 16) ^ GMul(0x02, inStateHex[1][c]) ^ GMul(0x03, inStateHex[2][c]) ^ Integer.parseInt(inStateHex[3][c], 16));
+        String d2 = Integer.toHexString(Integer.parseInt(inStateHex[0][c], 16) ^ Integer.parseInt(inStateHex[1][c], 16) ^ GMul(0x02, inStateHex[2][c]) ^ GMul(0x03, inStateHex[3][c]));
+        String d3 = Integer.toHexString(GMul(0x03, inStateHex[0][c]) ^ Integer.parseInt(inStateHex[1][c], 16) ^ Integer.parseInt(inStateHex[2][c], 16) ^ GMul(0x02, inStateHex[3][c]));
+
+        outStateHex[0][c] = d0.length() > 1 ? d0 : "0" + d0;
+        outStateHex[1][c] = d1.length() > 1 ? d1 : "0" + d1;
+        outStateHex[2][c] = d2.length() > 1 ? d2 : "0" + d2;
+        outStateHex[3][c] = d3.length() > 1 ? d3 : "0" + d3;
     }
 
     return outStateHex;
   }
 
-  /**
-   */
-  static String[] galoisMultHelper(String[] in) {
-    String[] out = new String[4];
-    int[][] d = {
-      { 2, 3, 1, 1 },
-      { 1, 2, 3, 1 },
-      { 1, 1, 2, 3 },
-      { 3, 1, 1, 2 },
-    };
-
-    for (int i = 0; i < out.length; i++) {
-      out[i] = Integer.toHexString(galoisMult(d[i][0], in[0])^galoisMult(d[i][1], in[1])^galoisMult(d[i][2], in[2])^galoisMult(d[i][3], in[2]));
-    }
-
-    return out;
-  }
-
-  static int galoisMult(int multiplier, String hex) {
+  static int GMul(int multiplier, String hex) {
     if (multiplier == 3) {
       return (int) mult3Lookup[Integer.parseInt(hex, 16)];
     } else if (multiplier == 2) {
       return (int) mult2Lookup[Integer.parseInt(hex, 16)];
-    } else {
-      return Integer.parseInt(hex, 16);
     }
+
+    return Integer.parseInt(hex, 16);
   }
 
   static String[][] columnMatricize(String textHex) {
@@ -349,6 +339,7 @@ class AESCipher {
     String[][] addKey = AESStateXOR(pTextHexMatrix, cTextHexMatrix);
     String[][] nibbleSub = AESNibbleSub(addKey);
     String[][] shiftRows = AESShiftRows(nibbleSub);
+    //printMatrix(shiftRows);
     String[][] mixCols = AESMixColumn(shiftRows);
     printMatrix(mixCols);
 
