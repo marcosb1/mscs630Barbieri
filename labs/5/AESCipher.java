@@ -297,6 +297,8 @@ class AESCipher {
     return outStateHex;
   }
 
+  /**
+   */
   static int GMul(int multiplier, String hex) {
     if (multiplier == 3) {
       return (int) mult3Lookup[Integer.parseInt(hex, 16)];
@@ -307,6 +309,8 @@ class AESCipher {
     return Integer.parseInt(hex, 16);
   }
 
+  /**
+   */
   static String[][] columnMatricize(String textHex) {
     String[][] hexMatrix = new String[4][4];
 
@@ -321,6 +325,8 @@ class AESCipher {
     return hexMatrix;
   }
 
+  /**
+   */
   static String columnDeMatricize(String[][] hexMatrix) {
     String outStr = "";
 
@@ -364,9 +370,5 @@ class AESCipher {
 
     String cTextHex = columnDeMatricize(addKey);
     return cTextHex;
-  }
-
-  public static void main(String[] args) {
-    System.out.println(AESCipher.AES("54776F204F6E65204E696E652054776F", "5468617473206D79204B756E67204675"));
   }
 }
