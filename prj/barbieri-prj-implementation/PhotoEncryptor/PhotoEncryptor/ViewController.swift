@@ -51,11 +51,6 @@ class ViewController: UIViewController, UITextFieldDelegate, UIImagePickerContro
         return true
     }
     
-    func textFieldDidEndEditing(_ textField: UITextField) {
-        imageNameLabel.text = imageNameTextField.text
-    }
-    
-    
     //MARK: Actions
     
     @IBAction func selectImageFromPhotoLibrary(_ sender: UITapGestureRecognizer) {
@@ -81,7 +76,12 @@ class ViewController: UIViewController, UITextFieldDelegate, UIImagePickerContro
         }
         
         if imageNameTextField.text != nil {
-            let image = ImageEncryptor(message: imageNameTextField.text!.lowercased()).encrypt(in: image)!
+            imageView.image = ImageEncryptor(message: imageNameTextField.text!.lowercased(), image: image).encrypt()
+            
+            guard let image = imageView.image else {
+                return
+            }
+            
             UIImageWriteToSavedPhotosAlbum(image, nil, nil, nil)
         }
     }

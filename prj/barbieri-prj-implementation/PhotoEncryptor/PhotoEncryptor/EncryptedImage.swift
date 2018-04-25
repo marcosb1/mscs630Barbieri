@@ -57,103 +57,131 @@ extension UIColor {
     }
 }
 
+extension Character {
+    var ascii: UInt32? {
+        return String(self).unicodeScalars.filter{$0.isASCII}.first?.value
+    }
+}
+
 class ImageEncryptor {
     
     //public var image: UIImage
     private var message: String
+    public var image: UIImage
     
-    init(message messageToEncrypt: String) {
+    init(message messageToEncrypt: String, image coverImage: UIImage) {
         self.message = messageToEncrypt
-        self.message = self.toBase16(str: messageToEncrypt)
+        self.image = coverImage
     }
     
-    func toBase16(str plaintext: String) -> String {
-        let data = plaintext.data(using: .utf8)!
-        let hexString = data.map{ String(format:"%02x", $0) }.joined()
-        return hexString
-    }
+    //MARK: Encryption Steps
     
-    func encrypt(in image: UIImage) -> UIImage? {
-        guard let coverImage = image.cgImage else {
-            print("[ERROR] CGImage canot be retrieved.")
+    func encrypt() -> UIImage? {
+        guard let inputCGImage = self.image.cgImage else {
+            print("unable to get cgImage")
+            return nil
+        }
+        let colorSpace       = CGColorSpaceCreateDeviceRGB()
+        let width            = inputCGImage.width
+        let height           = inputCGImage.height
+        let bytesPerPixel    = 4
+        let bitsPerComponent = 8
+        let bytesPerRow      = bytesPerPixel * width
+        let bitmapInfo       = RGBA32.bitmapInfo
+        
+        guard let context = CGContext(data: nil, width: width, height: height, bitsPerComponent: bitsPerComponent, bytesPerRow: bytesPerRow, space: colorSpace, bitmapInfo: bitmapInfo) else {
+            print("unable to create context")
+            return nil
+        }
+        context.draw(inputCGImage, in: CGRect(x: 0, y: 0, width: width, height: height))
+        
+        guard let buffer = context.data else {
+            print("unable to get context data")
             return nil
         }
         
-        let plainImgWidth = coverImage.width
-        let plainImgHeight = coverImage.height
-        let colorSpace = CGColorSpaceCreateDeviceRGB()
-        let bytesPerPixel: Int = 4
-        let plainImgBytesPerRow: Int = bytesPerPixel * plainImgWidth
-        let bitsPerComponent: Int = 8
+        let pixelBuffer = buffer.bindMemory(to: RGBA32.self, capacity: width * height)
         
-        let plainImgAlphaInfo = coverImage.alphaInfo // this is what solved the issue.
+        /*for row in 0 ..< Int(height) {
+            for column in 0 ..< Int(width) {
+                let offset = row * width + column
+                print(pixelBuffer[offset].redComponent)
+                
+                if (pixelBuffer[offset].redComponent > pixelBuffer[offset].greenComponent) &&
+                    (pixelBuffer[offset].redComponent > pixelBuffer[offset].blueComponent) {
+                    //pixelBuffer[offset].redComponent = Character()
+                }
+                
+            }
+        }*/
         
-        let sizeOfRawDataInBytes: Int = Int(plainImgHeight * plainImgWidth * 4)
-        
-        guard let plainImgDataProvider = coverImage.dataProvider else {
-            // image has no data provider ? what could this mean ?
-            print("[ERROR] Cannot retrieve data provider.")
-            return nil
-        }
-        
-        guard let imgData = plainImgDataProvider.data else {
-            // means the data is null
-            print("[ERROR] Cannot retrieve data from CGDataProvider.")
-            return nil
-        }
-        
-        var rawData = UnsafeMutableRawPointer.allocate(byteCount: sizeOfRawDataInBytes, alignment: 1)
-        
-        guard var context = CGContext.init(data: rawData,
-                                           width: plainImgWidth,
-                                           height: plainImgHeight,
-                                           bitsPerComponent: bitsPerComponent,
-                                           bytesPerRow: plainImgBytesPerRow,
-                                           space: colorSpace,
-                                           bitmapInfo: CGBitmapInfo(rawValue: plainImgAlphaInfo.rawValue).rawValue | CGBitmapInfo.byteOrder32Big.rawValue) else {
-                                            
-             print("[ERROR] Cannot create context.")
-             return nil
-        }
-        
-        let rect: CGRect = CGRect.init(x: 0, y: 0, width: CGFloat(plainImgWidth), height: CGFloat(plainImgHeight))
-        context.draw(coverImage, in: rect, byTiling: false)
-        
-        var data = NSData(bytes: rawData, length: sizeOfRawDataInBytes)
-        
-        print("Data Begins...", terminator: "\n")
-        //NSLog("%@", data)
-        var safeData: Data = data as Data
-        
-        var n = 0
-        for i in stride(from: 0, to: self.message.count, by: 2) {
-            let firstNibbleIndex = self.message.index(self.message.startIndex, offsetBy: i)
-            let secondNibbleIndex = self.message.index(self.message.startIndex, offsetBy: i + 1)
-            print(self.message[firstNibbleIndex])
-            print(self.message[secondNibbleIndex])
+        var row = 0
+        var col = 0
+        for c in self.message {
+            let offset = row * width + col
+            print(pixelBuffer[offset])
             
-            let hexPair = Int("\(self.message[firstNibbleIndex])\(self.message[secondNibbleIndex])", radix: 16)!
-            safeData[n] = UInt8(hexPair)
-            n += 1
-        }
-        print("Data Ends.", terminator: "\n")
-        
-        guard let newContext = CGContext.init(data: rawData,
-                                              width: plainImgWidth,
-                                              height: plainImgHeight,
-                                              bitsPerComponent: bitsPerComponent,
-                                              bytesPerRow: plainImgBytesPerRow,
-                                              space: colorSpace,
-                                              bitmapInfo: CGBitmapInfo(rawValue: plainImgAlphaInfo.rawValue).rawValue) else {
-            print("[ERROR] New context could not be created.")
-            return nil
+            var red = pixelBuffer[offset].redComponent
+            var green = pixelBuffer[offset].greenComponent
+            var blue = pixelBuffer[offset].blueComponent
+            var alpha = pixelBuffer[offset].alphaComponent
+            
+            red = UInt8(c.ascii!)
+            
+            pixelBuffer[offset] = RGBA32.init(red: red, green: green, blue: blue, alpha: alpha)
+            row += 1
+            col += 1
         }
         
-        guard let newImg = newContext.makeImage() else {
-            print("[ERROR] Could not create encrypted image.")
-            return nil
-        }
+        let outputCGImage = context.makeImage()!
+        let outputImage = UIImage(cgImage: outputCGImage, scale: image.scale, orientation: image.imageOrientation)
         
-        return UIImage.init(cgImage: newImg)
+        return outputImage
+    }
+    
+    //MARK: Helpers
+    
+}
+
+struct RGBA32: Equatable {
+    private var color: UInt32
+    
+    var redComponent: UInt8 {
+        return UInt8((color >> 24) & 255)
+    }
+    
+    var greenComponent: UInt8 {
+        return UInt8((color >> 16) & 255)
+    }
+    
+    var blueComponent: UInt8 {
+        return UInt8((color >> 8) & 255)
+    }
+    
+    var alphaComponent: UInt8 {
+        return UInt8((color >> 0) & 255)
+    }
+    
+    init(red: UInt8, green: UInt8, blue: UInt8, alpha: UInt8) {
+        let red   = UInt32(red)
+        let green = UInt32(green)
+        let blue  = UInt32(blue)
+        let alpha = UInt32(alpha)
+        color = (red << 24) | (green << 16) | (blue << 8) | (alpha << 0)
+    }
+    
+    static let red     = RGBA32(red: 255, green: 0,   blue: 0,   alpha: 255)
+    static let green   = RGBA32(red: 0,   green: 255, blue: 0,   alpha: 255)
+    static let blue    = RGBA32(red: 0,   green: 0,   blue: 255, alpha: 255)
+    static let white   = RGBA32(red: 255, green: 255, blue: 255, alpha: 255)
+    static let black   = RGBA32(red: 0,   green: 0,   blue: 0,   alpha: 255)
+    static let magenta = RGBA32(red: 255, green: 0,   blue: 255, alpha: 255)
+    static let yellow  = RGBA32(red: 255, green: 255, blue: 0,   alpha: 255)
+    static let cyan    = RGBA32(red: 0,   green: 255, blue: 255, alpha: 255)
+    
+    static let bitmapInfo = CGImageAlphaInfo.premultipliedLast.rawValue | CGBitmapInfo.byteOrder32Little.rawValue
+    
+    static func ==(lhs: RGBA32, rhs: RGBA32) -> Bool {
+        return lhs.color == rhs.color
     }
 }
