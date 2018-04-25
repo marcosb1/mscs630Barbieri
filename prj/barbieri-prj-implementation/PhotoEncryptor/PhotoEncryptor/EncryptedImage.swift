@@ -7,6 +7,7 @@
 //
 
 import UIKit
+
 extension UIImage {
     func getPixelColor(pos: CGPoint) -> UIColor? {
         
@@ -58,32 +59,21 @@ extension UIColor {
 
 class ImageEncryptor {
     
+    //public var image: UIImage
+    private var message: String
+    
+    init(message messageToEncrypt: String) {
+        self.message = messageToEncrypt
+        self.message = self.toBase16(str: messageToEncrypt)
+    }
+    
     func toBase16(str plaintext: String) -> String {
         let data = plaintext.data(using: .utf8)!
         let hexString = data.map{ String(format:"%02x", $0) }.joined()
         return hexString
     }
     
-    func encrypt(in image: UIImage, str plaintext: String) -> UIImage? {
-        /*
-        print("Plaintext: \(toBase16(str: plaintext))")
-        
-        let cycle = 0
-        print("Height: \(image.size.height)")
-        print("Width: \(image.size.width)")
-        for row in stride(from: 0, to: image.size.height, by: 1) {
-            for col in stride(from: 0, to: image.size.width, by: 1) {
-                guard let color = image.getPixelColor(pos: CGPoint(x: row, y: col)) else {
-                    return nil
-                }
-                
-                print("Cycle: \(cycle) Row: \(row) Column: \(col)", terminator: "\n")
-                print(color.toHexString)
-                
-            }
-        }
-        */
-        
+    func encrypt(in image: UIImage) -> UIImage? {
         guard let coverImage = image.cgImage else {
             print("[ERROR] CGImage canot be retrieved.")
             return nil
@@ -134,11 +124,17 @@ class ImageEncryptor {
         print("Data Begins...", terminator: "\n")
         //NSLog("%@", data)
         var safeData: Data = data as Data
-        for i in 0..<safeData.count {
-            print(safeData[i], terminator: " ")
-            if (i + 1) % 3 == 0 {
-                safeData[i] = 0
-            }
+        
+        var n = 0
+        for i in stride(from: 0, to: self.message.count, by: 2) {
+            let firstNibbleIndex = self.message.index(self.message.startIndex, offsetBy: i)
+            let secondNibbleIndex = self.message.index(self.message.startIndex, offsetBy: i + 1)
+            print(self.message[firstNibbleIndex])
+            print(self.message[secondNibbleIndex])
+            
+            let hexPair = Int("\(self.message[firstNibbleIndex])\(self.message[secondNibbleIndex])", radix: 16)!
+            safeData[n] = UInt8(hexPair)
+            n += 1
         }
         print("Data Ends.", terminator: "\n")
         

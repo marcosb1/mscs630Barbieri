@@ -43,5 +43,7 @@
 	</array>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Allows you to upload a picture to be encrypted</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Allows you to save a picture</string>
 </dict>
 </plist>

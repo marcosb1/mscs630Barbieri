@@ -75,13 +75,15 @@ class ViewController: UIViewController, UITextFieldDelegate, UIImagePickerContro
     }
     
     @IBAction func setDefaultLabelText(_ sender: UIButton) {
-        imageNameLabel.text = "Default Text"
         
         guard let image = imageView.image else {
             return
         }
         
-        imageView.image = ImageEncryptor().encrypt(in: image, str: "Hello")
+        if imageNameTextField.text != nil {
+            let image = ImageEncryptor(message: imageNameTextField.text!.lowercased()).encrypt(in: image)!
+            UIImageWriteToSavedPhotosAlbum(image, nil, nil, nil)
+        }
     }
     
 }
