@@ -20,7 +20,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="top" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="Ouo-9u-BhC">
-                                <rect key="frame" x="16" y="40" width="343" height="424.5"/>
+                                <rect key="frame" x="16" y="40" width="343" height="447.5"/>
                                 <subviews>
                                     <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Enter Message" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="BBo-Nh-YVN" userLabel="ImageNameLabel">
                                         <rect key="frame" x="0.0" y="0.0" width="114" height="20.5"/>
@@ -35,7 +35,7 @@
                                         <textInputTraits key="textInputTraits" returnKeyType="done"/>
                                     </textField>
                                     <imageView contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" placeholderIntrinsicWidth="320" placeholderIntrinsicHeight="320" image="defaultPhoto" highlightedImage="defaultPhoto" translatesAutoresizingMaskIntoConstraints="NO" id="Zyk-4m-wC7">
-                                        <rect key="frame" x="0.0" y="66.5" width="320" height="320"/>
+                                        <rect key="frame" x="0.0" y="66.5" width="343" height="343"/>
                                         <gestureRecognizers/>
                                         <constraints>
                                             <constraint firstAttribute="width" secondItem="Zyk-4m-wC7" secondAttribute="height" multiplier="1:1" id="9LT-Mg-Stm"/>
@@ -45,7 +45,7 @@
                                         </connections>
                                     </imageView>
                                     <button opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="KG2-cC-lG4">
-                                        <rect key="frame" x="0.0" y="394.5" width="53" height="30"/>
+                                        <rect key="frame" x="0.0" y="417.5" width="53" height="30"/>
                                         <state key="normal" title="Encrypt"/>
                                         <connections>
                                             <action selector="encryptImage:" destination="9pv-A4-QxB" eventType="touchUpInside" id="4te-eV-Dca"/>
@@ -54,6 +54,8 @@
                                 </subviews>
                                 <constraints>
                                     <constraint firstAttribute="trailing" secondItem="gdP-V7-haf" secondAttribute="trailing" id="2Lp-ha-DON"/>
+                                    <constraint firstItem="Zyk-4m-wC7" firstAttribute="leading" secondItem="Ouo-9u-BhC" secondAttribute="leading" id="D6l-KB-FbY"/>
+                                    <constraint firstAttribute="trailing" secondItem="Zyk-4m-wC7" secondAttribute="trailing" id="who-F3-t0U"/>
                                 </constraints>
                             </stackView>
                         </subviews>
@@ -89,7 +91,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="top" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="36v-rA-LCQ">
-                                <rect key="frame" x="16" y="40" width="343" height="424.5"/>
+                                <rect key="frame" x="16" y="40" width="343" height="447.5"/>
                                 <subviews>
                                     <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Enter Key" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qb4-Hv-cm8" userLabel="ImageNameLabel">
                                         <rect key="frame" x="0.0" y="0.0" width="73" height="20.5"/>
@@ -104,7 +106,7 @@
                                         <textInputTraits key="textInputTraits" returnKeyType="done"/>
                                     </textField>
                                     <imageView contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" placeholderIntrinsicWidth="320" placeholderIntrinsicHeight="320" image="defaultPhoto" highlightedImage="defaultphoto" translatesAutoresizingMaskIntoConstraints="NO" id="am1-d4-6PV">
-                                        <rect key="frame" x="0.0" y="66.5" width="320" height="320"/>
+                                        <rect key="frame" x="0.0" y="66.5" width="343" height="343"/>
                                         <gestureRecognizers/>
                                         <constraints>
                                             <constraint firstAttribute="width" secondItem="am1-d4-6PV" secondAttribute="height" multiplier="1:1" id="fkb-4s-Geu"/>
@@ -114,7 +116,7 @@
                                         </connections>
                                     </imageView>
                                     <button opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jyJ-aE-Piz">
-                                        <rect key="frame" x="0.0" y="394.5" width="55" height="30"/>
+                                        <rect key="frame" x="0.0" y="417.5" width="55" height="30"/>
                                         <state key="normal" title="Decrypt"/>
                                         <connections>
                                             <action selector="decryptImage:" destination="8rJ-Kc-sve" eventType="touchUpInside" id="n3f-w5-HRt"/>
@@ -122,6 +124,8 @@
                                     </button>
                                 </subviews>
                                 <constraints>
+                                    <constraint firstAttribute="trailing" secondItem="am1-d4-6PV" secondAttribute="trailing" id="8sE-Df-xPL"/>
+                                    <constraint firstItem="am1-d4-6PV" firstAttribute="leading" secondItem="36v-rA-LCQ" secondAttribute="leading" id="ghe-Kb-X0X"/>
                                     <constraint firstAttribute="trailing" secondItem="frg-8S-nmo" secondAttribute="trailing" id="icX-xw-hJM"/>
                                 </constraints>
                             </stackView>

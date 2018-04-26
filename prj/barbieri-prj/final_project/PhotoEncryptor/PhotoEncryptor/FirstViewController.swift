@@ -79,7 +79,7 @@ class FirstViewController: UIViewController, UITextFieldDelegate, UIImagePickerC
         }
         
         if imageNameTextField.text != nil {
-            imageView.image = EncryptionEngine().encrypt(message: imageNameTextField.text!.lowercased(), image: image)
+            imageView.image = LSBEncryptionEngine.encrypt(message: imageNameTextField.text!.lowercased(), image: image)
             
             guard let image = imageView.image else {
                 return
