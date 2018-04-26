@@ -2,8 +2,8 @@
 //  AppDelegate.swift
 //  PhotoEncryptor
 //
-//  Created by Marcos Barbieri on 3/26/18.
-//  Copyright © 2018 com.marist. All rights reserved.
+//  Created by Marcos Barbieri on 4/26/18.
+//  Copyright © 2018 Marcos Barbieri. All rights reserved.
 //
 
 import UIKit

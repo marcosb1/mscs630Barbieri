@@ -1,14 +1,14 @@
 //
-//  ViewController.swift
+//  FirstViewController.swift
 //  PhotoEncryptor
 //
-//  Created by Marcos Barbieri on 3/26/18.
-//  Copyright © 2018 com.marist. All rights reserved.
+//  Created by Marcos Barbieri on 4/26/18.
+//  Copyright © 2018 Marcos Barbieri. All rights reserved.
 //
 
 import UIKit
 
-class ViewController: UIViewController, UITextFieldDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+class FirstViewController: UIViewController, UITextFieldDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
     //MARK: Properties
     
@@ -16,14 +16,17 @@ class ViewController: UIViewController, UITextFieldDelegate, UIImagePickerContro
     @IBOutlet weak var imageNameTextField: UITextField!
     @IBOutlet weak var imageView: UIImageView!
     
+    //MARK: Controller Functions
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        // Handle the text field’s user input through delegate callbacks.
-        imageNameTextField.delegate = self
+        // Do any additional setup after loading the view, typically from a nib.
     }
-    
-    //MARK: UIImagePickerControllerDelegate
+
+    override func didReceiveMemoryWarning() {
+        super.didReceiveMemoryWarning()
+        // Dispose of any resources that can be recreated.
+    }
     
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
         // Dismiss the picker if the user canceled.
@@ -59,7 +62,7 @@ class ViewController: UIViewController, UITextFieldDelegate, UIImagePickerContro
         
         // UIImagePickerController is a view controller that lets a user pick media from their photo library.
         let imagePickerController = UIImagePickerController()
-     
+        
         // Only allow photos to be picked, not taken.
         imagePickerController.sourceType = .photoLibrary
         
@@ -69,14 +72,14 @@ class ViewController: UIViewController, UITextFieldDelegate, UIImagePickerContro
         present(imagePickerController, animated: true, completion: nil)
     }
     
-    @IBAction func setDefaultLabelText(_ sender: UIButton) {
+    @IBAction func encryptImage(_ sender: UIButton) {
         
         guard let image = imageView.image else {
             return
         }
         
         if imageNameTextField.text != nil {
-            imageView.image = ImageEncryptor(message: imageNameTextField.text!.lowercased(), image: image).encrypt()
+            imageView.image = EncryptionEngine().encrypt(message: imageNameTextField.text!.lowercased(), image: image)
             
             guard let image = imageView.image else {
                 return
@@ -85,6 +88,5 @@ class ViewController: UIViewController, UITextFieldDelegate, UIImagePickerContro
             UIImageWriteToSavedPhotosAlbum(image, nil, nil, nil)
         }
     }
-    
 }
 
