@@ -8,14 +8,14 @@
 
 import UIKit
 
-public class LSBEncryptionEngine: EncryptionEngine {
+public class LSCEncryptionEngine: EncryptionEngine {
     
     //MARK: LSB Encryption
     
     public static func encrypt(message plainText: String, image coverImage: UIImage) -> UIImage? {
         
         guard let inputCGImage = coverImage.cgImage else {
-            print("unable to get cgImage")
+            print("[ERROR] Unable to get cgImage")
             return nil
         }
         let colorSpace       = CGColorSpaceCreateDeviceRGB()
@@ -27,13 +27,13 @@ public class LSBEncryptionEngine: EncryptionEngine {
         let bitmapInfo       = RGBA32.bitmapInfo
         
         guard let context = CGContext(data: nil, width: width, height: height, bitsPerComponent: bitsPerComponent, bytesPerRow: bytesPerRow, space: colorSpace, bitmapInfo: bitmapInfo) else {
-            print("unable to create context")
+            print("[ERROR] Unable to create context")
             return nil
         }
         context.draw(inputCGImage, in: CGRect(x: 0, y: 0, width: width, height: height))
         
         guard let buffer = context.data else {
-            print("unable to get context data")
+            print("[ERROR] Unable to extract buffer.")
             return nil
         }
         
@@ -65,7 +65,7 @@ public class LSBEncryptionEngine: EncryptionEngine {
     
     public static func decrypt(key: String, image coverImage: UIImage) -> String? {
         guard let inputCGImage = coverImage.cgImage else {
-            print("unable to get cgImage")
+            print("[ERROR] Unable to get cgImage")
             return nil
         }
         let colorSpace       = CGColorSpaceCreateDeviceRGB()
@@ -77,29 +77,29 @@ public class LSBEncryptionEngine: EncryptionEngine {
         let bitmapInfo       = RGBA32.bitmapInfo
         
         guard let context = CGContext(data: nil, width: width, height: height, bitsPerComponent: bitsPerComponent, bytesPerRow: bytesPerRow, space: colorSpace, bitmapInfo: bitmapInfo) else {
-            print("unable to create context")
+            print("[ERROR] Unable to create context")
             return nil
         }
         context.draw(inputCGImage, in: CGRect(x: 0, y: 0, width: width, height: height))
         
         guard let buffer = context.data else {
-            print("unable to get context data")
+            print("[ERROR] Unable to extract buffer.")
             return nil
         }
         
         let pixelBuffer = buffer.bindMemory(to: RGBA32.self, capacity: width * height)
         
-        var message = ""
+        var plainText = ""
         for row in 0..<height {
             for col in 0..<width {
                 let offset = row * width + col
                 print(pixelBuffer[offset])
                 
-                message += String(Character(UnicodeScalar(pixelBuffer[offset].redComponent)))
+                plainText += String(Character(UnicodeScalar(pixelBuffer[offset].redComponent)))
             }
         }
         
-        return message
+        return plainText
     }
 
 }

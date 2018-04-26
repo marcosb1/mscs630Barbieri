@@ -81,7 +81,8 @@ class SecondViewController: UIViewController, UITextFieldDelegate, UIImagePicker
         }
         
         if imageNameTextField.text != nil {
-            guard let message = LSBEncryptionEngine.decrypt(key: imageNameTextField.text!.lowercased(), image: image) else {
+            guard let message = LSCEncryptionEngine.decrypt(key: imageNameTextField.text!.lowercased(),
+                                                            image: image) else {
                 return
             }
             
