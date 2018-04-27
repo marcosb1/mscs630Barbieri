@@ -79,28 +79,33 @@ class FirstViewController: UIViewController, UITextFieldDelegate, UIImagePickerC
             return
         }
         
-        if imageNameTextField.text != nil && keyTextField.text != nil {
-            if imageNameTextField.text!.count != keyTextField.text!.count &&
-                imageNameTextField.text!.count > 0 {
-                let alert = UIAlertController(title: "Error", message: "Please provide a valid plaintext and key.", preferredStyle: .alert)
-                alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
-                self.present(alert, animated: true)
-                
-                return
-            }
+        guard let plainText = imageNameTextField.text?.lowercased().replacingOccurrences(of: " ", with: "") else {
+            throwErrorAlert(title: "Error", message: "Please provide a valid plaintext.")
+            return
+        }
         
-            
-            imageView.image = ChannelSwitchEncryptionEngine.encrypt(message: imageNameTextField.text!.lowercased(),
-                                                                    key: keyTextField.text!,
+        guard let key = keyTextField.text?.lowercased() else {
+            throwErrorAlert(title: "Error", message: "Please provide a valid key.")
+            return
+        }
+        
+        print("Count Plain: \(plainText.count) Count Key: \(key.count)")
+        print("\(key.contains(" "))")
+        if plainText.count != key.count || plainText.count < 1 || key.count < 1 || key.contains(" ") {
+            throwErrorAlert(title: "Error", message: "Please provide a valid plaintext and key.")
+            return
+        } else {
+            imageView.image = ChannelSwitchEncryptionEngine.encrypt(message: plainText,
+                                                                    key: key,
                                                                     image: image)
             
-            guard let image = imageView.image else {
+            guard let encryptedImage = imageView.image else {
                 return
             }
             
             // YOU NEED TO USE PNG, OTHERWISE THE COMPRESSION WILL BE LOSSY
             // AND THE DATA WILL BE GONE
-            let imgData = UIImagePNGRepresentation(image)
+            let imgData = UIImagePNGRepresentation(encryptedImage)
             let pngImage = UIImage(data: imgData!)
             UIImageWriteToSavedPhotosAlbum(pngImage!, nil, nil, nil)
             
@@ -111,13 +116,13 @@ class FirstViewController: UIViewController, UITextFieldDelegate, UIImagePickerC
             
             // cleanup
             clearViews()
-        } else {
-            let alert = UIAlertController(title: "Error", message: "Please provide a valid plaintext and key.", preferredStyle: .alert)
-            alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
-            self.present(alert, animated: true)
-            
-            return
         }
+    }
+    
+    func throwErrorAlert(title: String, message: String) {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
+        self.present(alert, animated: true)
     }
     
     func clearViews() {

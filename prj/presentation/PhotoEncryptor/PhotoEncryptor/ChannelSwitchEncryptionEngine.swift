@@ -60,9 +60,6 @@ public class ChannelSwitchEncryptionEngine: EncryptionEngine {
             var blue = pixelBuffer[offset].blueComponent
             var alpha = pixelBuffer[offset].alphaComponent
             
-            print(plainTextHex)
-            print(cipherHex)
-            print("Mod: \(cipherHex.ascii! % 4)")
             if (cipherHex.ascii! % 4) == 1 {
                 red = UInt8(plainTextHex.ascii!)
             } else if (cipherHex.ascii! % 4) == 2 {
@@ -73,11 +70,7 @@ public class ChannelSwitchEncryptionEngine: EncryptionEngine {
                 alpha = UInt8(plainTextHex.ascii!)
             }
             
-            print("Offset: \(offset)")
-            print("Red: \(red) Green: \(green) Blue: \(blue) Alpha: \(alpha)")
-            print("RGBA: \(RGBA32.init(red: red, green: green, blue: blue, alpha: alpha))")
             pixelBuffer[offset] = RGBA32.init(red: red, green: green, blue: blue, alpha: alpha)
-            print("Buffer Pixel: \(pixelBuffer[offset])")
             row += 1
             col += 1
         }
@@ -123,23 +116,16 @@ public class ChannelSwitchEncryptionEngine: EncryptionEngine {
             
             let offset = row * width + col
             
-            print("Mod: \(cipherHex.ascii! % 4)")
-            print("Pixel: \(pixelBuffer[offset])")
             if (cipherHex.ascii! % 4) == 1 {
-                print(pixelBuffer[offset].redComponent)
                 plainText += String(Character(UnicodeScalar(UInt32(pixelBuffer[offset].redComponent))!))
             } else if (cipherHex.ascii! % 4) == 2 {
-                print(pixelBuffer[offset].greenComponent)
                 plainText += String(Character(UnicodeScalar(UInt32(pixelBuffer[offset].greenComponent))!))
             } else if (cipherHex.ascii! % 4) == 3 {
-                print(pixelBuffer[offset].blueComponent)
                 plainText += String(Character(UnicodeScalar(UInt32(pixelBuffer[offset].blueComponent))!))
             } else {
-                print(pixelBuffer[offset].alphaComponent)
                 plainText += String(Character(UnicodeScalar(UInt32(pixelBuffer[offset].alphaComponent))!))
             }
             
-            print("Decrypt Offset: \(offset)")
             row += 1
             col += 1
         }
