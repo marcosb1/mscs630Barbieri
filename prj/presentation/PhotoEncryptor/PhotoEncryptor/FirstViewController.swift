@@ -79,7 +79,17 @@ class FirstViewController: UIViewController, UITextFieldDelegate, UIImagePickerC
             return
         }
         
-        if imageNameTextField.text != nil {
+        if imageNameTextField.text != nil && keyTextField.text != nil {
+            if imageNameTextField.text!.count != keyTextField.text!.count &&
+                imageNameTextField.text!.count > 0 {
+                let alert = UIAlertController(title: "Error", message: "Please provide a valid plaintext and key.", preferredStyle: .alert)
+                alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
+                self.present(alert, animated: true)
+                
+                return
+            }
+        
+            
             imageView.image = ChannelSwitchEncryptionEngine.encrypt(message: imageNameTextField.text!.lowercased(),
                                                                     key: keyTextField.text!,
                                                                     image: image)
@@ -88,21 +98,32 @@ class FirstViewController: UIViewController, UITextFieldDelegate, UIImagePickerC
                 return
             }
             
-            /*guard let message = ChannelSwitchEncryptionEngine.decrypt(key: imageNameTextField.text!.lowercased(),
-                                                                      image: image) else {
-                                                                        return
-            }
-            
-            let alert = UIAlertController(title: "Your Message", message: message, preferredStyle: .alert)
-            
-            alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
-            
-            self.present(alert, animated: true)*/
-            
+            // YOU NEED TO USE PNG, OTHERWISE THE COMPRESSION WILL BE LOSSY
+            // AND THE DATA WILL BE GONE
             let imgData = UIImagePNGRepresentation(image)
             let pngImage = UIImage(data: imgData!)
             UIImageWriteToSavedPhotosAlbum(pngImage!, nil, nil, nil)
+            
+            // notify user of action
+            let alert = UIAlertController(title: "Success", message: "Photo Successfully saved to camera roll.", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
+            self.present(alert, animated: true)
+            
+            // cleanup
+            clearViews()
+        } else {
+            let alert = UIAlertController(title: "Error", message: "Please provide a valid plaintext and key.", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
+            self.present(alert, animated: true)
+            
+            return
         }
+    }
+    
+    func clearViews() {
+        imageNameTextField.text = nil
+        keyTextField.text = nil
+        imageView.image = UIImage(named: "defaultPhoto")
     }
 }
 

@@ -80,19 +80,33 @@ class SecondViewController: UIViewController, UITextFieldDelegate, UIImagePicker
             return
         }
         
-        if imageNameTextField.text != nil {
+        if imageNameTextField.text != nil &&
+            imageNameTextField.text!.count > 0  {
             guard let message = ChannelSwitchEncryptionEngine.decrypt(key: imageNameTextField.text!.lowercased(),
                                                             image: image) else {
                 return
             }
             
             let alert = UIAlertController(title: "Your Message", message: message, preferredStyle: .alert)
-            
             alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
-            
             self.present(alert, animated: true)
+            
+            // cleanup
+            clearViews()
+        } else {
+            let alert = UIAlertController(title: "Error", message: "Please provide a valid key.", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
+            self.present(alert, animated: true)
+            
+            return
         }
     }
-
+    
+    
+    func clearViews() {
+        imageNameTextField.text = nil
+        imageNameTextField.text = nil
+        imageView.image = UIImage(named: "defaultPhoto")
+    }
 }
 
