@@ -25,7 +25,7 @@ class PhotoEncryptorTests: XCTestCase {
     func testExample() {
         // This is an example of a functional test case.
         // Use XCTAssert and related functions to verify your tests produce the correct results.
-        /*let coverImage = UIImage(named: "testPlainCoverImage")
+        let coverImage = UIImage(named: "testPlainCoverImage")
         
         // first run
         print("[INFO] Starting first test...")
@@ -45,7 +45,7 @@ class PhotoEncryptorTests: XCTestCase {
         // second run
         print("[INFO] Starting second test...")
         let secondMessage = "this is the second test"
-        let secondKey = "thisaisatheasecondatest"
+        let secondKey = "thisisthesecondtest"
         guard let secondRunImage = ChannelSwitchEncryptionEngine.encrypt(message: secondMessage, key: secondKey, image: coverImage!) else {
             XCTAssertTrue(false)
             return
@@ -54,7 +54,7 @@ class PhotoEncryptorTests: XCTestCase {
             XCTAssertTrue(false)
             return
         }
-        XCTAssertTrue(secondMessage == secondRunMessage)
+        XCTAssertTrue(secondMessage.lowercased().replacingOccurrences(of: " ", with: "") == secondRunMessage)
         print("[INFO] Finishing second run.")
         
         // third run
@@ -62,15 +62,10 @@ class PhotoEncryptorTests: XCTestCase {
         let thirdMessage = "thisisthethirdtestwhichhasalongmessage"
         let thirdKey = "butthisistooshort"
         guard let thirdRunImage = ChannelSwitchEncryptionEngine.encrypt(message: thirdMessage, key: thirdKey, image: coverImage!) else {
-            XCTAssertTrue(false)
+            XCTAssertTrue(true)
             return
         }
-        guard let thirdRunMessage = ChannelSwitchEncryptionEngine.decrypt(key: thirdKey, image: thirdRunImage) else {
-            XCTAssertTrue(false)
-            return
-        }
-        XCTAssertTrue(thirdMessage == thirdRunMessage)
-        print("[INFO] Finishing third run.")*/
+        print("[INFO] Finishing third run.")
     }
     
     func testPerformanceExample() {

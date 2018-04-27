@@ -12,7 +12,14 @@ public class ChannelSwitchEncryptionEngine: EncryptionEngine {
     
     //MARK: Channel Switch Encryption
     
-    public static func encrypt(message plainText: String, key: String, image coverImage: UIImage) -> UIImage? {
+    public static func encrypt(message: String, key: String, image coverImage: UIImage) -> UIImage? {
+        let plainText = message.lowercased().replacingOccurrences(of: " ", with: "")
+        let cipherKey = key.lowercased()
+        
+        // error checking
+        if plainText.count != cipherKey.count || key.contains(" ") {
+            return nil
+        }
         
         guard let inputCGImage = coverImage.cgImage else {
             print("[ERROR] Unable to get cgImage")
@@ -50,8 +57,8 @@ public class ChannelSwitchEncryptionEngine: EncryptionEngine {
         for i in 0..<plainText.count {
             let plainTextHexIndex = plainText.index(plainText.startIndex, offsetBy: i)
             let plainTextHex = plainText[plainTextHexIndex]
-            let cipherHexIndex = key.index(key.startIndex, offsetBy: i)
-            let cipherHex = key[cipherHexIndex]
+            let cipherHexIndex = cipherKey.index(cipherKey.startIndex, offsetBy: i)
+            let cipherHex = cipherKey[cipherHexIndex]
             
             let offset = row * width + col
             
@@ -82,6 +89,10 @@ public class ChannelSwitchEncryptionEngine: EncryptionEngine {
     }
     
     public static func decrypt(key: String, image coverImage: UIImage) -> String? {
+        if key.contains(" ") {
+            return nil
+        }
+        
         guard let inputCGImage = coverImage.cgImage else {
             print("[ERROR] Unable to get cgImage")
             return nil
