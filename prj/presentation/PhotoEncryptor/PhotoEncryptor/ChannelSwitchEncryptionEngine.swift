@@ -26,7 +26,13 @@ public class ChannelSwitchEncryptionEngine: EncryptionEngine {
         let bytesPerRow      = bytesPerPixel * width
         let bitmapInfo       = RGBA32.bitmapInfo
         
-        guard let context = CGContext(data: nil, width: width, height: height, bitsPerComponent: bitsPerComponent, bytesPerRow: bytesPerRow, space: colorSpace, bitmapInfo: bitmapInfo) else {
+        guard let context = CGContext(data: nil,
+                                      width: width,
+                                      height: height,
+                                      bitsPerComponent: bitsPerComponent,
+                                      bytesPerRow: bytesPerRow,
+                                      space: colorSpace,
+                                      bitmapInfo: bitmapInfo) else {
             print("[ERROR] Unable to create context")
             return nil
         }
