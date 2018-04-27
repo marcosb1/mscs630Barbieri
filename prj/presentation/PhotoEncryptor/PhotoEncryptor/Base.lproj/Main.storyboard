@@ -21,7 +21,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="top" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="Ouo-9u-BhC">
-                                <rect key="frame" x="16" y="40" width="343" height="447.5"/>
+                                <rect key="frame" x="16" y="40" width="343" height="514"/>
                                 <subviews>
                                     <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Enter Message" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="BBo-Nh-YVN" userLabel="ImageNameLabel">
                                         <rect key="frame" x="0.0" y="0.0" width="114" height="20.5"/>
@@ -35,8 +35,20 @@
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                         <textInputTraits key="textInputTraits" returnKeyType="done"/>
                                     </textField>
+                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Enter Key" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KYp-Jr-WHf" userLabel="KeyLabel">
+                                        <rect key="frame" x="0.0" y="66.5" width="73" height="20.5"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Enter Key" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="PXg-ax-sjF" userLabel="KeyTextField">
+                                        <rect key="frame" x="0.0" y="95" width="343" height="30"/>
+                                        <nil key="textColor"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                        <textInputTraits key="textInputTraits" returnKeyType="done"/>
+                                    </textField>
                                     <imageView contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" placeholderIntrinsicWidth="320" placeholderIntrinsicHeight="320" image="defaultPhoto" highlightedImage="defaultPhoto" translatesAutoresizingMaskIntoConstraints="NO" id="Zyk-4m-wC7">
-                                        <rect key="frame" x="0.0" y="66.5" width="343" height="343"/>
+                                        <rect key="frame" x="0.0" y="133" width="343" height="343"/>
                                         <gestureRecognizers/>
                                         <constraints>
                                             <constraint firstAttribute="width" secondItem="Zyk-4m-wC7" secondAttribute="height" multiplier="1:1" id="9LT-Mg-Stm"/>
@@ -46,7 +58,7 @@
                                         </connections>
                                     </imageView>
                                     <button opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="KG2-cC-lG4">
-                                        <rect key="frame" x="0.0" y="417.5" width="53" height="30"/>
+                                        <rect key="frame" x="0.0" y="484" width="53" height="30"/>
                                         <state key="normal" title="Encrypt"/>
                                         <connections>
                                             <action selector="encryptImage:" destination="9pv-A4-QxB" eventType="touchUpInside" id="4te-eV-Dca"/>
@@ -56,6 +68,7 @@
                                 <constraints>
                                     <constraint firstAttribute="trailing" secondItem="gdP-V7-haf" secondAttribute="trailing" id="2Lp-ha-DON"/>
                                     <constraint firstItem="Zyk-4m-wC7" firstAttribute="leading" secondItem="Ouo-9u-BhC" secondAttribute="leading" id="D6l-KB-FbY"/>
+                                    <constraint firstAttribute="trailing" secondItem="PXg-ax-sjF" secondAttribute="trailing" id="rad-Nw-CJ5"/>
                                     <constraint firstAttribute="trailing" secondItem="Zyk-4m-wC7" secondAttribute="trailing" id="who-F3-t0U"/>
                                 </constraints>
                             </stackView>
@@ -73,6 +86,7 @@
                         <outlet property="imageNameLabel" destination="BBo-Nh-YVN" id="LGe-wk-zM3"/>
                         <outlet property="imageNameTextField" destination="gdP-V7-haf" id="GS0-97-OA4"/>
                         <outlet property="imageView" destination="Zyk-4m-wC7" id="00h-qa-9RB"/>
+                        <outlet property="keyTextField" destination="PXg-ax-sjF" id="FrP-xl-QNw"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="W5J-7L-Pyd" sceneMemberID="firstResponder"/>
@@ -101,7 +115,7 @@
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Enter Message" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="frg-8S-nmo" userLabel="ImageNameTextField">
+                                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Enter Key" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="frg-8S-nmo" userLabel="ImageNameTextField">
                                         <rect key="frame" x="0.0" y="28.5" width="343" height="30"/>
                                         <nil key="textColor"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>

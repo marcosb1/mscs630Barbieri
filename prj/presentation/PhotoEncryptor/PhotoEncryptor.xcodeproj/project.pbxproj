@@ -15,7 +15,7 @@
 		153554B4209273CA00B7CE4C /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 153554B2209273CA00B7CE4C /* LaunchScreen.storyboard */; };
 		153554BF209273CA00B7CE4C /* PhotoEncryptorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 153554BE209273CA00B7CE4C /* PhotoEncryptorTests.swift */; };
 		153554CA2092771500B7CE4C /* EncryptionEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 153554C92092771500B7CE4C /* EncryptionEngine.swift */; };
-		154FA0C22092868D0035936C /* LSCEncryptionEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 154FA0C12092868D0035936C /* LSCEncryptionEngine.swift */; };
+		154FA0C22092868D0035936C /* ChannelSwitchEncryptionEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 154FA0C12092868D0035936C /* ChannelSwitchEncryptionEngine.swift */; };
 		154FA0C42092878B0035936C /* Util.swift in Sources */ = {isa = PBXBuildFile; fileRef = 154FA0C32092878B0035936C /* Util.swift */; };
 /* End PBXBuildFile section */
 
@@ -42,7 +42,7 @@
 		153554BE209273CA00B7CE4C /* PhotoEncryptorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoEncryptorTests.swift; sourceTree = "<group>"; };
 		153554C0209273CA00B7CE4C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		153554C92092771500B7CE4C /* EncryptionEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EncryptionEngine.swift; sourceTree = "<group>"; };
-		154FA0C12092868D0035936C /* LSCEncryptionEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LSCEncryptionEngine.swift; sourceTree = "<group>"; };
+		154FA0C12092868D0035936C /* ChannelSwitchEncryptionEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelSwitchEncryptionEngine.swift; sourceTree = "<group>"; };
 		154FA0C32092878B0035936C /* Util.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Util.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -93,7 +93,7 @@
 				153554B2209273CA00B7CE4C /* LaunchScreen.storyboard */,
 				153554B5209273CA00B7CE4C /* Info.plist */,
 				153554C92092771500B7CE4C /* EncryptionEngine.swift */,
-				154FA0C12092868D0035936C /* LSCEncryptionEngine.swift */,
+				154FA0C12092868D0035936C /* ChannelSwitchEncryptionEngine.swift */,
 				154FA0C32092878B0035936C /* Util.swift */,
 			);
 			path = PhotoEncryptor;
@@ -209,7 +209,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				154FA0C22092868D0035936C /* LSCEncryptionEngine.swift in Sources */,
+				154FA0C22092868D0035936C /* ChannelSwitchEncryptionEngine.swift in Sources */,
 				154FA0C42092878B0035936C /* Util.swift in Sources */,
 				153554AC209273C700B7CE4C /* SecondViewController.swift in Sources */,
 				153554A8209273C700B7CE4C /* AppDelegate.swift in Sources */,

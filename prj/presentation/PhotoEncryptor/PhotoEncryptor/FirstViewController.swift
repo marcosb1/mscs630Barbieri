@@ -15,6 +15,7 @@ class FirstViewController: UIViewController, UITextFieldDelegate, UIImagePickerC
     @IBOutlet weak var imageNameLabel: UILabel!
     @IBOutlet weak var imageNameTextField: UITextField!
     @IBOutlet weak var imageView: UIImageView!
+    @IBOutlet weak var keyTextField: UITextField!
     
     //MARK: Controller Functions
     
@@ -79,14 +80,28 @@ class FirstViewController: UIViewController, UITextFieldDelegate, UIImagePickerC
         }
         
         if imageNameTextField.text != nil {
-            imageView.image = LSCEncryptionEngine.encrypt(message: imageNameTextField.text!.lowercased(),
-                                                          image: image)
+            imageView.image = ChannelSwitchEncryptionEngine.encrypt(message: imageNameTextField.text!.lowercased(),
+                                                                    key: keyTextField.text!,
+                                                                    image: image)
             
             guard let image = imageView.image else {
                 return
             }
             
-            UIImageWriteToSavedPhotosAlbum(image, nil, nil, nil)
+            /*guard let message = ChannelSwitchEncryptionEngine.decrypt(key: imageNameTextField.text!.lowercased(),
+                                                                      image: image) else {
+                                                                        return
+            }
+            
+            let alert = UIAlertController(title: "Your Message", message: message, preferredStyle: .alert)
+            
+            alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
+            
+            self.present(alert, animated: true)*/
+            
+            let imgData = UIImagePNGRepresentation(image)
+            let pngImage = UIImage(data: imgData!)
+            UIImageWriteToSavedPhotosAlbum(pngImage!, nil, nil, nil)
         }
     }
 }

@@ -10,7 +10,7 @@ import UIKit
 
 public protocol EncryptionEngine {
     
-    static func encrypt(message plainText: String, image coverImage: UIImage) -> UIImage?
+    static func encrypt(message plainText: String, key: String, image coverImage: UIImage) -> UIImage?
     
     static func decrypt(key: String, image coverImage: UIImage) -> String?
     

@@ -1,5 +1,5 @@
 //
-//  LSBEncryptionEngine.swift
+//  ChannelSwitchEncryptionEngine.swift
 //  PhotoEncryptor
 //
 //  Created by Marcos Barbieri on 4/26/18.
@@ -8,11 +8,11 @@
 
 import UIKit
 
-public class LSCEncryptionEngine: EncryptionEngine {
+public class ChannelSwitchEncryptionEngine: EncryptionEngine {
     
-    //MARK: LSB Encryption
+    //MARK: Channel Switch Encryption
     
-    public static func encrypt(message plainText: String, image coverImage: UIImage) -> UIImage? {
+    public static func encrypt(message plainText: String, key: String, image coverImage: UIImage) -> UIImage? {
         
         guard let inputCGImage = coverImage.cgImage else {
             print("[ERROR] Unable to get cgImage")
@@ -41,18 +41,37 @@ public class LSCEncryptionEngine: EncryptionEngine {
         
         var row = 0
         var col = 0
-        for c in plainText {
+        for i in 0..<plainText.count {
+            let plainTextHexIndex = plainText.index(plainText.startIndex, offsetBy: i)
+            let plainTextHex = plainText[plainTextHexIndex]
+            let cipherHexIndex = key.index(key.startIndex, offsetBy: i)
+            let cipherHex = key[cipherHexIndex]
+            
             let offset = row * width + col
-            print(pixelBuffer[offset])
             
             var red = pixelBuffer[offset].redComponent
-            let green = pixelBuffer[offset].greenComponent
-            let blue = pixelBuffer[offset].blueComponent
-            let alpha = pixelBuffer[offset].alphaComponent
+            var green = pixelBuffer[offset].greenComponent
+            var blue = pixelBuffer[offset].blueComponent
+            var alpha = pixelBuffer[offset].alphaComponent
             
-            red = UInt8(c.ascii!)
+            print(plainTextHex)
+            print(cipherHex)
+            print("Mod: \(cipherHex.ascii! % 4)")
+            if (cipherHex.ascii! % 4) == 1 {
+                red = UInt8(plainTextHex.ascii!)
+            } else if (cipherHex.ascii! % 4) == 2 {
+                green = UInt8(plainTextHex.ascii!)
+            } else if (cipherHex.ascii! % 4) == 3 {
+                blue = UInt8(plainTextHex.ascii!)
+            } else {
+                alpha = UInt8(plainTextHex.ascii!)
+            }
             
+            print("Offset: \(offset)")
+            print("Red: \(red) Green: \(green) Blue: \(blue) Alpha: \(alpha)")
+            print("RGBA: \(RGBA32.init(red: red, green: green, blue: blue, alpha: alpha))")
             pixelBuffer[offset] = RGBA32.init(red: red, green: green, blue: blue, alpha: alpha)
+            print("Buffer Pixel: \(pixelBuffer[offset])")
             row += 1
             col += 1
         }
@@ -90,13 +109,33 @@ public class LSCEncryptionEngine: EncryptionEngine {
         let pixelBuffer = buffer.bindMemory(to: RGBA32.self, capacity: width * height)
         
         var plainText = ""
-        for row in 0..<height {
-            for col in 0..<width {
-                let offset = row * width + col
-                print(pixelBuffer[offset])
-                
-                plainText += String(Character(UnicodeScalar(pixelBuffer[offset].redComponent)))
+        var row = 0
+        var col = 0
+        for i in 0..<key.count {
+            let cipherIndex = key.index (key.startIndex, offsetBy: i)
+            let cipherHex = key[cipherIndex]
+            
+            let offset = row * width + col
+            
+            print("Mod: \(cipherHex.ascii! % 4)")
+            print("Pixel: \(pixelBuffer[offset])")
+            if (cipherHex.ascii! % 4) == 1 {
+                print(pixelBuffer[offset].redComponent)
+                plainText += String(Character(UnicodeScalar(UInt32(pixelBuffer[offset].redComponent))!))
+            } else if (cipherHex.ascii! % 4) == 2 {
+                print(pixelBuffer[offset].greenComponent)
+                plainText += String(Character(UnicodeScalar(UInt32(pixelBuffer[offset].greenComponent))!))
+            } else if (cipherHex.ascii! % 4) == 3 {
+                print(pixelBuffer[offset].blueComponent)
+                plainText += String(Character(UnicodeScalar(UInt32(pixelBuffer[offset].blueComponent))!))
+            } else {
+                print(pixelBuffer[offset].alphaComponent)
+                plainText += String(Character(UnicodeScalar(UInt32(pixelBuffer[offset].alphaComponent))!))
             }
+            
+            print("Decrypt Offset: \(offset)")
+            row += 1
+            col += 1
         }
         
         return plainText

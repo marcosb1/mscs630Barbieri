@@ -81,12 +81,16 @@ class SecondViewController: UIViewController, UITextFieldDelegate, UIImagePicker
         }
         
         if imageNameTextField.text != nil {
-            guard let message = LSCEncryptionEngine.decrypt(key: imageNameTextField.text!.lowercased(),
+            guard let message = ChannelSwitchEncryptionEngine.decrypt(key: imageNameTextField.text!.lowercased(),
                                                             image: image) else {
                 return
             }
             
-            print(message)
+            let alert = UIAlertController(title: "Your Message", message: message, preferredStyle: .alert)
+            
+            alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
+            
+            self.present(alert, animated: true)
         }
     }
 
