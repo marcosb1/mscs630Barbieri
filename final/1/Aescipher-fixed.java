@@ -119,28 +119,20 @@ class Aescipher {
       }
 
       if (roundCounter != (rounds - 1)) {
-        if (roundCounter == 0) {
-          masterText = aesStateXor(masterText, keyHex);
-        } else {
-          // Exclusive or output is passed to nibble substitution is
-          // called
-          masterText = aesNibbleSub(masterText);
-          // Nibble substituted output is called to shiftrows method
-          masterText = aesShiftRow(masterText);
-          // Shifted output is sent to mixing columns function
-          masterText = aesMixColumn(masterText);
-          masterText = aesStateXor(masterText, keyHex);
-        }
-      } else {
+        masterText = aesStateXor(masterText, keyHex);
         // Exclusive or output is passed to nibble substitution is
         // called
         masterText = aesNibbleSub(masterText);
         // Nibble substituted output is called to shiftrows method
         masterText = aesShiftRow(masterText);
+        // Shifted output is sent to mixing columns function
+        if (roundCounter != (rounds - 1)) {
+          masterText = aesMixColumn(masterText);
+        }
+
+      } else
         // In the tenth round we do only plain xor
         masterText = aesStateXor(masterText, keyHex);
-      }
-      roundCounter++;
     }
     // System.out.println("The Cipher Text is");
     for (int cols = 0; cols < 4; cols++) {
