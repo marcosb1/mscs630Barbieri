@@ -5,7 +5,6 @@
  *         the cipher
  *
  */
- import java.util.Arrays;
 
 class Aescipher {
 
@@ -79,7 +78,6 @@ class Aescipher {
     col_valueforInput = size_basket[0];
     column_size = size_basket[1];
     rounds = size_basket[2];
-    System.out.println(col_valueforInput + " " + column_size + " " + rounds);
     keyMatrixW_encrypt = new String[4][column_size];
     masterKey_encrypt = new String[4][col_valueforInput];
     masterText_encrypt = new String[4][4];
@@ -119,28 +117,21 @@ class Aescipher {
       }
 
       if (roundCounter != (rounds - 1)) {
-        if (roundCounter == 0) {
-          masterText = aesStateXor(masterText, keyHex);
-        } else {
-          // Exclusive or output is passed to nibble substitution is
-          // called
-          masterText = aesNibbleSub(masterText);
-          // Nibble substituted output is called to shiftrows method
-          masterText = aesShiftRow(masterText);
-          // Shifted output is sent to mixing columns function
-          masterText = aesMixColumn(masterText);
-          masterText = aesStateXor(masterText, keyHex);
-        }
-      } else {
+        roundCounter++;
+        masterText = aesStateXor(masterText, keyHex);
         // Exclusive or output is passed to nibble substitution is
         // called
         masterText = aesNibbleSub(masterText);
         // Nibble substituted output is called to shiftrows method
         masterText = aesShiftRow(masterText);
+        // Shifted output is sent to mixing columns function
+        if (roundCounter != (rounds - 1)) {
+          masterText = aesMixColumn(masterText);
+        }
+
+      } else
         // In the tenth round we do only plain xor
         masterText = aesStateXor(masterText, keyHex);
-      }
-      roundCounter++;
     }
     // System.out.println("The Cipher Text is");
     for (int cols = 0; cols < 4; cols++) {
@@ -408,15 +399,4 @@ class Aescipher {
       return shifted;
   }
 
-  /** printMatrix
-   * Helper function to debug matrices
-   *
-   * parameter:
-   *  in: matrix to be printed
-   */
-  static void printMatrix(String[][] in) {
-    for (int i = 0; i < in.length; i++) {
-      System.out.println(Arrays.toString(in[i]));
-    }
-  }
 }

@@ -6,7 +6,7 @@
  *
  */
 
-public class AescipherBuggy {
+class Aescipher {
 
   /**
    * S_BOX static variable which is used for s-box transformations and used in
@@ -117,6 +117,7 @@ public class AescipherBuggy {
       }
 
       if (roundCounter != (rounds - 1)) {
+        roundCounter++;
         masterText = aesStateXor(masterText, keyHex);
         // Exclusive or output is passed to nibble substitution is
         // called
