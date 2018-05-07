@@ -117,7 +117,6 @@ class Aescipher {
       }
 
       if (roundCounter != (rounds - 1)) {
-        roundCounter++;
         masterText = aesStateXor(masterText, keyHex);
         // Exclusive or output is passed to nibble substitution is
         // called
