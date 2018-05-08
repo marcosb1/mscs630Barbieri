@@ -128,10 +128,10 @@ class Aescipher {
         if (roundCounter != (rounds - 1)) {
           masterText = aesMixColumn(masterText);
         }
-
-      } else
+      } else {
         // In the tenth round we do only plain xor
         masterText = aesStateXor(masterText, keyHex);
+      }
     }
     // System.out.println("The Cipher Text is");
     for (int cols = 0; cols < 4; cols++) {
